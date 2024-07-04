@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -7,10 +7,10 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useTheme } from '../context/ThemeContext';
 
 const navigation = [
-  { name: 'Home', href: '/', current: true },
-  { name: 'Feed', href: '/newsFeed', current: false },
-  { name: 'Publish', href: '/publishNew', current: false },
-  { name: 'Finance', href: '/finance', current: false },
+  { name: 'Home', href: '/' },
+  { name: 'Feed', href: '/newsFeed' },
+  { name: 'Publish', href: '/publishNew' },
+  { name: 'Finance', href: '/finance' },
 ]
 
 function classNames(...classes) {
@@ -19,6 +19,7 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
 
   return (
     <Disclosure as="nav" className="bg-gray-800 fixed top-0 left-0 w-full z-30">
@@ -53,7 +54,7 @@ export default function Navbar() {
                         key={item.name}
                         to={item.href}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          item.href === location.pathname ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium',
                         )}
                         aria-current={item.current ? 'page' : undefined}

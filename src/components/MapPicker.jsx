@@ -26,7 +26,7 @@ const LocationMarker = ({ position, setPosition }) => {
 
 export default function LocationPicker({ position, setPosition }) {
   return (
-    <div className="flex flex-col items-center my-4">
+    <div className="flex flex-col items-center my-4 z-0">
       <MapContainer
         center={[51.505, -0.09]}
         zoom={13}
@@ -40,7 +40,7 @@ export default function LocationPicker({ position, setPosition }) {
         <LocationMarker position={position} setPosition={setPosition} />
       </MapContainer>
       {position && (
-        <div className="mt-4 p-4 bg-white shadow-md rounded-md">
+        <div className="mt-4 p-4 bg-neutral-400 shadow-md rounded-md">
           <p className="text-lg">Selected Location:</p>
           <p>Latitude: {position.lat}</p>
           <p>Longitude: {position.lng}</p>

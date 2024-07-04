@@ -1,11 +1,16 @@
+import { Link } from 'react-router-dom';
+
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
+// Importting context
+import { useTheme } from '../context/ThemeContext';
+
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
+  { name: 'Home', href: '/', current: true },
+  { name: 'Feed', href: '/newsFeed', current: false },
+  { name: 'Publish', href: '/publishNew', current: false },
+  { name: 'Finance', href: '/finance', current: false },
 ]
 
 function classNames(...classes) {
@@ -13,8 +18,10 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-gray-800 fixed top-0 left-0 w-full z-30">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -34,17 +41,17 @@ export default function Navbar() {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
                   <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
+                    className="h-10 w-auto rounded-lg"
+                    src="./logoChn.png"
+                    alt="Chain Sphere"
                   />
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         className={classNames(
                           item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium',
@@ -52,7 +59,7 @@ export default function Navbar() {
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -86,37 +93,44 @@ export default function Navbar() {
                   >
                     <MenuItem>
                       {({ focus }) => (
-                        <a
-                          href="#"
+                        <Link
+                          href="/profile/:userAdd"
                           className={classNames(focus ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                         >
                           Your Profile
-                        </a>
+                        </Link>
                       )}
                     </MenuItem>
                     <MenuItem>
                       {({ focus }) => (
-                        <a
-                          href="#"
+                        <Link
+                          href="/"
                           className={classNames(focus ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                         >
                           Settings
-                        </a>
+                        </Link>
                       )}
                     </MenuItem>
                     <MenuItem>
                       {({ focus }) => (
-                        <a
-                          href="#"
+                        <Link
+                          href="/"
                           className={classNames(focus ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                         >
                           Sign out
-                        </a>
+                        </Link>
                       )}
                     </MenuItem>
                   </MenuItems>
                 </Menu>
               </div>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="text-white bg-blue-700 hover:bg-blue-800  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 relative left-8"
+              >
+                {theme === 'dark' ? 'Light' : 'Dark'}
+              </button>
             </div>
           </div>
 

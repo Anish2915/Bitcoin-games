@@ -67,7 +67,7 @@ export default function Publish() {
     return (
         <main className='bg-white dark:bg-black mt-28 flex flex-col pb-12'>
             <div className="h-full w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center">
-                <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+                <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:[mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
                 <div className='pb-10'>
                     <div className='w-[60vw] mx-auto flex justify-around items-center'>
@@ -96,7 +96,7 @@ export default function Publish() {
                         >
                             <div className='text-black dark:text-white pb-4'>
                                 <h2
-                                    className="py-6 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-300 via-yellow-300 to-green-400"
+                                    className="py-6 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-700 dark:from-red-300 via-yellow-300 to-green-700 dark:to-green-400"
                                 >Enter the time frame of stock prediction</h2>
                                 <div className='flex flex-row w-[50em] justify-around mx-auto'>
                                     <DatePickerComponent
@@ -188,7 +188,7 @@ export default function Publish() {
                         >
                             <div>
                                 <h2
-                                    className="py-6 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-300 via-yellow-300 to-green-400"
+                                    className="py-6 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-700 dark:from-red-300 via-yellow-300 to-green-700 dark:to-green-400"
                                 >Select the location from the map of the news incident</h2>
                                 <LocationPicker
                                     position={location}

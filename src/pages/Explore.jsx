@@ -23,8 +23,8 @@ import DatePickerComponent from '../components/DatePickerComponent';
 import Meteors from '../components/ui/Meteors';
 
 const sortOptions = [
-    { name: 'Most Popular', id: 'mostPop', current: true },
-    { name: 'Newest', id: 'newest', current: false },
+    { name: 'Most Popular', id: 'mostPop', current: false },
+    { name: 'Newest', id: 'newest', current: true },
     { name: 'Best AI Rating', id: 'aiRat', current: false },
     { name: 'Reverse', id: 'reverse', current: false },
 ]
@@ -683,7 +683,7 @@ export default function Explore() {
                                                 {item.title}
                                             </h1>
                                             <p className="font-normal text-base text-slate-500 mb-4 relative break-words whitespace-normal">
-                                                {`${item.article.split(' ').slice(0, item.visibleWords).join(' ')}...`}
+                                                {`${item.article.split(' ').slice(0, (item.visibleWords < 25 ? item.visibleWords : 25)).join(' ')}...`}
                                             </p>
                                             <p className='text-gray-400 absolute bottom-[5.3rem] left-6'>User Rating: {item.userRating}</p>
                                             <p className='text-gray-400 absolute bottom-[4rem] left-6'>AI Rating: {item.aiRating}</p>

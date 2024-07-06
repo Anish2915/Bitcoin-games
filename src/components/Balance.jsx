@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+const { ethers } = require("ethers");
 
 const Balance = ({ isDarkMode }) => {
   const [balance, setBalance] = useState('');

@@ -4,6 +4,35 @@ import React, { useState } from 'react';
 import DatePickerComponent from '../components/DatePickerComponent';
 import LocationPicker from '../components/MapPicker';
 
+import { set } from 'date-fns';
+import ArticleStorage from '../contracts/ArticleStorage.json'
+const { ethers } = require("ethers");
+
+const contractABI = ArticleStorage.abi;
+const contractAddress = '0xYourContractAddressHere';
+const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
+
+async function getProvider() {
+    if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        return provider;
+    } else {
+        const provider = new ethers.providers.JsonRpcProvider(RSK_TESTNET_URL);
+        return provider;
+    }
+}
+
+async function getContract() {
+    const provider = await getProvider();
+    if (provider) {
+        const signer = provider.getSigner();
+        return new ethers.Contract(contractAddress, contractABI, signer);
+    } else {
+        return null;
+    }
+}
+
 export default function Publish() {
     const [typeOfNews, setTypeOfNews] = useState('stock');
     const [startDate, setStartDate] = useState(new Date());
@@ -63,13 +92,50 @@ export default function Publish() {
         }
     };
 
-    const handleStockSubmit = () => {
+    const handleStockSubmit = async  () => {
         console.log('Printing here!')
+        const contract = await getContract();
+        if (contract) {
+            try {
+                const tx = await contract.storeStockArticle(
+                    articleDetails.Tags,
+                    articleDetails.Article,
+                    articleDetails.VisibleLimit,
+                    articleDetails.Price,
+                    0, // Assuming aiRating
+                    0, // Assuming userRating
+                    Math.floor(startDate.getTime() / 1000),
+                    Math.floor(endDate.getTime() / 1000)
+                );
+                await tx.wait();
+                console.log('Stock article stored successfully');
+            } catch (error) {
+                console.error('Error storing stock article:', error);
+            }
+        }
     }
 
-    const handleGeneralSubmit = () => {
-        console.log('Printing here!');
-    }
+    const handleGeneralSubmit = async () => {
+        const contract = await getContract();
+        if (contract) {
+            try {
+                const tx = await contract.storeGeneralArticle(
+                    articleDetails.Tags,
+                    articleDetails.Article,
+                    articleDetails.VisibleLimit,
+                    articleDetails.Price,
+                    0, // Assuming aiRating
+                    0, // Assuming userRating
+                    location ? location.latitude : 0,
+                    location ? location.longitude : 0
+                );
+                await tx.wait();
+                console.log('General article stored successfully');
+            } catch (error) {
+                console.error('Error storing general article:', error);
+            }
+        }
+    };
 
     return (
         <main className='bg-white dark:bg-black mt-28 flex flex-col pb-12'>

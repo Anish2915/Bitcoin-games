@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 // Importing components
 import DatePickerComponent from '../components/DatePickerComponent';
 import LocationPicker from '../components/MapPicker';
-import { set } from 'date-fns';
 
 export default function Publish() {
     const [typeOfNews, setTypeOfNews] = useState('stock');
@@ -11,11 +10,19 @@ export default function Publish() {
     const [endDate, setEndDate] = useState(new Date());
     const [location, setLocation] = useState(null);
     const [articleDetails, setArticleDetails] = useState({
+        'Title': '',
         'VisibleLimit': 20,
         'Price': 1e18,
         'Tags': ['Article', 'Stock'],
         'Article': null
     });
+
+    const handleTitleChange = (e) => {
+        setArticleDetails(prevState => ({
+            ...prevState,
+            Title: e.target.value,
+        }))
+    }
 
     const handleVisibleWordChange = (e) => {
         setArticleDetails(prevState => ({
@@ -114,6 +121,18 @@ export default function Publish() {
                             </div>
 
                             <div className='my-4'>
+                                <div className="mb-6">
+                                    <label for="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title of the Article</label>
+                                    <input
+                                        type="text"
+                                        value={articleDetails.Title}
+                                        onChange={handleTitleChange}
+                                        id="title"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Probably stock/crypto name and its prediction or related news"
+                                        required
+                                    />
+                                </div>
                                 <div className="grid gap-6 mb-6 md:grid-cols-2">
                                     <div>
                                         <label for="visible_words" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Visible words to free users</label>
@@ -176,7 +195,7 @@ export default function Publish() {
                                     <div className="flex items-center h-5">
                                         <input id="remember" type="checkbox" value="" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required />
                                     </div>
-                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
+                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="/" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
                                 </div>
                                 <button type="submit" className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2 w-36 h-12">Publish</button>
                             </div>
@@ -197,6 +216,18 @@ export default function Publish() {
                             </div>
 
                             <div className='my-4'>
+                                <div className="mb-6">
+                                    <label for="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title of the Article</label>
+                                    <input
+                                        type="text"
+                                        value={articleDetails.Title}
+                                        onChange={handleTitleChange}
+                                        id="title"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Probably the incident or location"
+                                        required
+                                    />
+                                </div>
                                 <div className="grid gap-6 mb-6 md:grid-cols-2">
                                     <div>
                                         <label for="visible_words" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Visible words to free users</label>
@@ -259,7 +290,7 @@ export default function Publish() {
                                     <div className="flex items-center h-5">
                                         <input id="remember" type="checkbox" value="" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required />
                                     </div>
-                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
+                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="/" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
                                 </div>
                                 <button type="submit" className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2 w-36 h-12">Publish</button>
                             </div>

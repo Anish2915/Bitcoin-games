@@ -17,52 +17,61 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon } from '@heroicons/rea
 // Importing components
 import ModalPopup from '../components/ModalPopup';
 import LocationPicker from '../components/LocationPicker';
+import DatePickerComponent from '../components/DatePickerComponent';
 
 // Impoting ui components
 import Meteors from '../components/ui/Meteors';
 
 const sortOptions = [
-    { name: 'Most Popular', href: '#', current: true },
-    { name: 'Best User Rating', href: '#', current: false },
-    { name: 'Newest', href: '#', current: false },
-    { name: 'Best AI Rating', href: '#', current: false },
+    { name: 'Most Popular', id: 'mostPop', current: true },
+    { name: 'Newest', id: 'newest', current: false },
+    { name: 'Best AI Rating', id: 'aiRat', current: false },
+    { name: 'Reverse', id: 'reverse', current: false },
 ]
 
 const filters = [
     {
+        id: 'category',
+        name: 'Category',
+        options: [
+            { value: 'stocks', label: 'Stocks' },
+            { value: 'general', label: 'General' },
+        ]
+    },
+    {
         id: 'locRadius',
         name: 'Location Radius',
         options: [
-            { value: '50km', label: '50 km', checked: false },
-            { value: '100km', label: '100 km', checked: false },
-            { value: '250km', label: '250 km', checked: true },
-            { value: '500km', label: '500 km', checked: false },
-            { value: '1000km', label: '1000 km', checked: false },
-            { value: 'more1000km', label: 'More than 100 km', checked: false },
+            { value: '50', label: '50 km' },
+            { value: '100', label: '100 km' },
+            { value: '250', label: '250 km' },
+            { value: '500', label: '500 km' },
+            { value: '1000', label: '1000 km' },
+            { value: '41000', label: 'More than 100 km' },
         ],
     },
     {
         id: 'wordLimit',
         name: 'Word Limit',
         options: [
-            { value: 'less100', label: 'Less than 100 words', checked: false },
-            { value: '100to500', label: '100 to 500 words', checked: false },
-            { value: '500to1000', label: '500 to 1000 words', checked: true },
-            { value: '1000to2000', label: '1000 to 2000 words', checked: false },
-            { value: '2000to5000', label: '2000 to 5000 words', checked: false },
-            { value: 'more5000', label: 'More than 5000 words', checked: false },
+            { value: '100', label: 'Less than 100 words' },
+            { value: '500', label: '100 to 500 words' },
+            { value: '1000', label: '500 to 1000 words' },
+            { value: '2000', label: '1000 to 2000 words' },
+            { value: '5000', label: '2000 to 5000 words' },
+            { value: '50000', label: 'More than 5000 words' },
         ],
     },
     {
         id: 'priceRange',
         name: 'Price Range',
         options: [
-            { value: 'less0.1', label: 'Less than 0.1 ETH', checked: true },
-            { value: '0.1to0.25', label: '0.1 to 0.25 ETH', checked: false },
-            { value: '0.25to0.5', label: '0.25 to 0.5 ETH', checked: false },
-            { value: '0.5to0.75', label: '0.5 to 0.75 ETH', checked: false },
-            { value: '0.75to1', label: '0.75 to 1 ETH', checked: false },
-            { value: 'more1', label: 'More than 1 ETH', checked: false },
+            { value: '0.1', label: 'Less than 0.1 ETH' },
+            { value: '0.25', label: '0.1 to 0.25 ETH' },
+            { value: '0.5', label: '0.25 to 0.5 ETH' },
+            { value: '0.75', label: '0.5 to 0.75 ETH' },
+            { value: '1', label: '0.75 to 1 ETH' },
+            { value: '10', label: 'More than 1 ETH' },
         ],
     },
 ]
@@ -75,20 +84,88 @@ export default function Explore() {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [position, setPosition] = useState(null);
-    const [newsFeed, setNewsFeed] = useState([]); // Initialize state for news feed
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [newsFeed, setNewsFeed] = useState([
+        {
+            contentId: 1,
+            title: 'Ethereum Price',
+            category: 'stocks',
+            tags: ['stocks', 'price', 'ethereum'],
+            visibleWords: 20,
+            price: 1e18,
+            publishedDate: new Date(),
+            article: 'Ethereum price is currently at $2000. It is expected to rise to $2500 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            startDate: new Date(),
+            endDate: new Date(),
+            userRating: 8,
+            aiRating: 6.2
+        }, {
+            contentId: 2,
+            title: 'Bitcoin Price',
+            category: 'stocks',
+            tags: ['stocks', 'price', 'bitcoin'],
+            visibleWords: 16,
+            price: 1e17,
+            publishedDate: new Date(),
+            article: 'Bitcoin price is currently at $50000. It is expected to rise to $60000 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            startDate: new Date(),
+            endDate: new Date(),
+            userRating: 5,
+            aiRating: 6
+        }, {
+            contentId: 3,
+            title: 'Clashes in Manipur',
+            category: 'general',
+            tags: ['general', 'politics', 'india', 'manipur', 'clashes', 'news'],
+            visibleWords: 25,
+            price: 1e16,
+            publishedDate: new Date(),
+            article: 'Clashes in Manipur are there from past three months. Up to now nearly 200+ people died. Till long time there was no action from the side of the central government. The whole Manipur is burning in fires. Some opposition leaders went but still now resolution can be seen. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            location: {
+                lat: 24.817011,
+                long: 93.936844
+            },
+            userRating: 3,
+            aiRating: 9
+        }, {
+            contentId: 4,
+            title: 'Stock Market Crash',
+            category: 'stocks',
+            tags: ['stocks', 'price', 'stock market', 'crash', 'news'],
+            visibleWords: 15,
+            price: 1e17,
+            publishedDate: new Date(),
+            article: 'Stock market crashed today. The SENSEX fell by 1000 points. The NIFTY fell by 300 points. The stock market is expected to recover in the next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            startDate: new Date(),
+            endDate: new Date(),
+            userRating: 9.4,
+            aiRating: 7.1
+        }
+    ]); // Initialize state for news feed
     const [filteredNewsFeed, setFilteredNewsFeed] = useState([]); // State for filtered news feed
+    const [searchedNewsFeed, setSearchedNewsFeed] = useState([]); // State for the searched news feed
     const [selectedFilters, setSelectedFilters] = useState({
-        locRadius: [],
-        wordLimit: [],
-        priceRange: []
+        category: ['stocks', 'general'],
+        locRadius: ['250'],
+        wordLimit: ['1000', '100'],
+        priceRange: ['0.1', '10']
     });
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleSearchQueryChange = (e) => {
         setSearchQuery(e.target.value);
-        setFilteredNewsFeed(
-            filteredNewsFeed.filter((item) => item.title.toLowerCase().includes(e.target.value.toLowerCase()))
+        setSearchedNewsFeed(
+            filteredNewsFeed.filter((item) => {
+                return item.title.toLowerCase().includes(e.target.value.toLowerCase()) || 
+                item.tags.some((tag) => tag.toLowerCase().includes(e.target.value.toLowerCase()));
+            })
         );
+    }
+
+    // Implement the payment for the article here
+    const handlePayForArticle = (contentId) => {
+        console.log(contentId);
     }
 
     const openModal = (e) => {
@@ -104,11 +181,45 @@ export default function Explore() {
         setPosition(null);
     };
 
-    useEffect(() => {
-        // Fetch the news feed from the blockend and keep it inside the variable fetchedNewsFeed
-        const fetchedNewsFeed = [];
-        setNewsFeed(fetchedNewsFeed);
-    }, []);
+    const handleSortOptionChange = (sortId) => {
+        let sortOption;
+        sortOptions.forEach(element => {
+            if (element.id === sortId) {
+                sortOption = element;
+                element.current = true;
+            } else {
+                element.current = false;
+            }
+        });
+
+        setSearchedNewsFeed((prevNewsFeed) => {
+            let sortedNewsFeed = [...prevNewsFeed];
+            switch (sortOption.id) {
+                case 'mostPop':
+                    sortedNewsFeed.sort((a, b) => b.userRating - a.userRating);
+                    break;
+                case 'newest':
+                    sortedNewsFeed.sort((a, b) => b.publishedDate - a.publishedDate);
+                    break;
+                case 'aiRat':
+                    sortedNewsFeed.sort((a, b) => b.aiRating - a.aiRating);
+                    break;
+                case 'reverse':
+                    sortedNewsFeed.reverse();
+                    break;
+                default:
+                    break;
+            }
+            return sortedNewsFeed
+        });
+    }
+
+    // To fetch the news from the backend when the page is rendered first
+    // useEffect(() => {
+    //     // Fetch the news feed from the blockend and keep it inside the variable fetchedNewsFeed
+    //     const fetchedNewsFeed = [];
+    //     setNewsFeed(fetchedNewsFeed);
+    // }, []);
 
     // Handle filter change
     const handleFilterChange = (filterCategory, value) => {
@@ -123,36 +234,144 @@ export default function Explore() {
         });
     };
 
+    const haversineDistance = (lat1, lng1, lat2, lng2) => {
+        const toRad = (value) => (value * Math.PI) / 180;
+        const R = 6371; // Radius of the Earth in kilometers
+        const dLat = toRad(lat2 - lat1);
+        const dLng = toRad(lng2 - lng1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in kilometers
+    };
+
     // Apply filters to the news feed
     useEffect(() => {
         const applyFilters = () => {
             let filtered = newsFeed;
-            
+
+            // Apply category filter
+            if (selectedFilters.category.length > 0) {
+                filtered = filtered.filter((item) => selectedFilters.category.includes(item.category))
+            } else {
+                filtered = [];
+            }
+
             // Apply position filter
-            if (position) {
-                // Position filter
+            if (position && selectedFilters.locRadius.length > 0) {
+                const centerLat = Number(position.lat);
+                const centerLng = Number(position.lng);
+                selectedFilters.locRadius.sort(function (a, b) { return (Number(a) - Number(b)); });
+                let radiusSm = Number(selectedFilters.locRadius[0]);
+                let radiusLg = Number(selectedFilters.locRadius[selectedFilters.locRadius.length - 1]);
+                switch (radiusSm) {
+                    case 50:
+                        radiusSm = 0;
+                        break;
+                    case 100:
+                        radiusSm = 50;
+                        break;
+                    case 250:
+                        radiusSm = 100;
+                        break;
+                    case 500:
+                        radiusSm = 250;
+                        break;
+                    case 1000:
+                        radiusSm = 500;
+                        break;
+                    default:
+                        radiusSm = 1000;
+                        break;
+                }
+
+                filtered = filtered.filter(item => {
+                    if (item.category !== 'general') return true;
+                    const distance = haversineDistance(centerLat, centerLng, item.location.lat, item.location.long);
+                    return (distance <= radiusLg && distance >= radiusSm);
+                });
             }
 
-            // Apply location radius filter
-            if (selectedFilters.locRadius.length > 0) {
-                // Location Radius filter
-            }
-
-            // Apply word limit filter
+            // // Apply word limit filter
             if (selectedFilters.wordLimit.length > 0) {
                 // Word limit filter
+                selectedFilters.wordLimit.sort(function (a, b) { return (Number(a) - Number(b)); });
+                let minWords = Number(selectedFilters.wordLimit[0]);
+                let maxWords = Number(selectedFilters.wordLimit[selectedFilters.wordLimit.length - 1]);
+                switch (minWords) {
+                    case 100:
+                        minWords = 0;
+                        break;
+                    case 500:
+                        minWords = 100;
+                        break;
+                    case 1000:
+                        minWords = 500;
+                        break;
+                    case 2000:
+                        minWords = 1000;
+                        break;
+                    case 5000:
+                        minWords = 2000;
+                        break;
+                    default:
+                        minWords = 5000;
+                        break;
+                }
+                filtered = filtered.filter((item) => {
+                    const words = item.article.split(' ');
+                    return words.length >= minWords && words.length <= maxWords;
+                })
+            } else {
+                filtered = [];
             }
 
-            // Apply price range filter
+            // // Apply price range filter
             if (selectedFilters.priceRange.length > 0) {
                 // Price range filter
+                selectedFilters.priceRange.sort(function (a, b) { return (Number(a) - Number(b)); });
+                let minPrice = Number(selectedFilters.priceRange[0]);
+                let maxPrice = Number(selectedFilters.priceRange[selectedFilters.priceRange.length - 1]);
+                switch (minPrice) {
+                    case 0.1:
+                        minPrice = 0;
+                        break;
+                    case 0.25:
+                        minPrice = 0.1;
+                        break;
+                    case 0.5:
+                        minPrice = 0.25;
+                        break;
+                    case 0.75:
+                        minPrice = 0.5;
+                        break;
+                    case 1:
+                        minPrice = 0.75;
+                        break;
+                    default:
+                        minPrice = 1;
+                        break;
+                }
+                filtered = filtered.filter((item) => (item.price / 1e18) >= minPrice && (item.price / 1e18) <= maxPrice);
+            } else {
+                filtered = [];
+            }
+
+            // Apply date filter
+            if (startDate && endDate) {
+                filtered = filtered.filter((item) => {
+                    return (item.category !== 'stocks') || (item.startDate >= startDate && item.endDate <= endDate);
+                });
             }
 
             setFilteredNewsFeed(filtered);
+            setSearchedNewsFeed(filtered);
         };
 
         applyFilters();
-    }, [selectedFilters, newsFeed]);
+    }, [selectedFilters, newsFeed, position, startDate, endDate]);
 
     return (
         <div className="bg-white dark:bg-black">
@@ -183,23 +402,39 @@ export default function Explore() {
 
                             {/* Filters */}
                             <form className="mt-4 border-t border-gray-200 dark:border-gray-600">
-                                <h3 className="sr-only">Location</h3>
-                                <button
-                                    className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gradient-to-l"
-                                    onClick={openModal}
-                                >
-                                    Open Location Picker
-                                </button>
-                                <ModalPopup isOpen={isModalOpen} onRequestClose={closeModal} title="Select the search location">
-                                    <LocationPicker position={position} setPosition={setPosition} clearLocation={clearLocation} />
-                                </ModalPopup>
-                                {position && (
-                                    <div className="mt-4 p-4 bg-white dark:bg-gray-700 shadow-md rounded-md">
-                                        <p className="text-lg text-gray-900 dark:text-gray-100">Selected Location:</p>
-                                        <p className="text-gray-900 dark:text-gray-100">Latitude: {position.lat}</p>
-                                        <p className="text-gray-900 dark:text-gray-100">Longitude: {position.lng}</p>
-                                    </div>
-                                )}
+                                {selectedFilters.category.includes('general') && <>
+                                    <h3 className="sr-only">Location</h3>
+                                    <button
+                                        className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gradient-to-l"
+                                        onClick={openModal}
+                                    >
+                                        Open Location Picker
+                                    </button>
+                                    <ModalPopup isOpen={isModalOpen} onRequestClose={closeModal} title="Select the search location">
+                                        <LocationPicker position={position} setPosition={setPosition} clearLocation={clearLocation} />
+                                    </ModalPopup>
+                                    {position && (
+                                        <div className="mt-4 p-4 bg-white dark:bg-gray-700 shadow-md rounded-md">
+                                            <p className="text-lg text-gray-900 dark:text-gray-100">Selected Location:</p>
+                                            <p className="text-gray-900 dark:text-gray-100">Latitude: {position.lat}</p>
+                                            <p className="text-gray-900 dark:text-gray-100">Longitude: {position.lng}</p>
+                                        </div>
+                                    )}
+                                </>}
+
+                                {selectedFilters.category.includes('stocks') && <div className='flex flex-col w-[18em] justify-between items-center my-4 h-[18em]'>
+                                    <DatePickerComponent
+                                        selectedDate={startDate}
+                                        setSelectedDate={setStartDate}
+                                        instruction='Start date of prediction'
+                                    />
+
+                                    <DatePickerComponent
+                                        selectedDate={endDate}
+                                        setSelectedDate={setEndDate}
+                                        instruction='End date of prediction'
+                                    />
+                                </div>}
 
                                 {filters.map((section) => (
                                     <Disclosure as="div" key={section.id} className="border-t border-gray-200 dark:border-gray-600 px-4 py-6">
@@ -226,7 +461,7 @@ export default function Explore() {
                                                                     name={`${section.id}[]`}
                                                                     value={option.value}
                                                                     type="checkbox"
-                                                                    defaultChecked={option.checked}
+                                                                    checked={selectedFilters[section.id].includes(option.value)}
                                                                     className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
                                                                     onChange={() => handleFilterChange(section.id, option.value)}
                                                                 />
@@ -317,18 +552,18 @@ export default function Explore() {
                                         {sortOptions.map((option) => (
                                             <MenuItem key={option.name}>
                                                 {({ focus }) => (
-                                                    <a
-                                                        href={option.href}
+                                                    <p
                                                         className={classNames(
                                                             option.current
                                                                 ? 'font-medium text-gray-900 dark:text-gray-100'
                                                                 : 'text-gray-500 dark:text-gray-300',
                                                             focus ? 'bg-gray-100 dark:bg-gray-700' : '',
-                                                            'block px-4 py-2 text-sm',
+                                                            'block px-4 py-2 text-sm', 'cursor-pointer'
                                                         )}
+                                                        onClick={() => handleSortOptionChange(option.id)}
                                                     >
                                                         {option.name}
-                                                    </a>
+                                                    </p>
                                                 )}
                                             </MenuItem>
                                         ))}
@@ -359,25 +594,41 @@ export default function Explore() {
                         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                             {/* Filters */}
                             <form className="hidden lg:block">
-                                <h3 className="sr-only">Location</h3>
-                                <button
-                                    className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gradient-to-l"
-                                    onClick={openModal}
-                                >
-                                    Open Location Picker
-                                </button>
-                                <ModalPopup isOpen={isModalOpen} onRequestClose={closeModal} title="Select the search location">
-                                    <LocationPicker position={position} setPosition={setPosition} clearLocation={clearLocation} />
-                                </ModalPopup>
-                                {position && (
-                                    <div className="mt-4 p-4 bg-white dark:bg-gray-700 shadow-md rounded-md">
-                                        <p className="text-lg text-gray-900 dark:text-gray-100">Selected Location:</p>
-                                        <p className="text-gray-900 dark:text-gray-100">Latitude: {position.lat}</p>
-                                        <p className="text-gray-900 dark:text-gray-100">Longitude: {position.lng}</p>
-                                    </div>
-                                )}
+                                {selectedFilters.category.includes('general') && <>
+                                    <h3 className="sr-only">Location</h3>
+                                    <button
+                                        className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gradient-to-l"
+                                        onClick={openModal}
+                                    >
+                                        Open Location Picker
+                                    </button>
+                                    <ModalPopup isOpen={isModalOpen} onRequestClose={closeModal} title="Select the search location">
+                                        <LocationPicker position={position} setPosition={setPosition} clearLocation={clearLocation} />
+                                    </ModalPopup>
+                                    {position && (
+                                        <div className="mt-4 p-4 bg-white dark:bg-gray-700 shadow-md rounded-md">
+                                            <p className="text-lg text-gray-900 dark:text-gray-100">Selected Location:</p>
+                                            <p className="text-gray-900 dark:text-gray-100">Latitude: {position.lat}</p>
+                                            <p className="text-gray-900 dark:text-gray-100">Longitude: {position.lng}</p>
+                                        </div>
+                                    )}
+                                </>}
 
-                                {filters.map((section) => (
+                                {selectedFilters.category.includes('stocks') && <div className='flex flex-col w-[18em] justify-between items-center my-4 h-[18em]'>
+                                    <DatePickerComponent
+                                        selectedDate={startDate}
+                                        setSelectedDate={setStartDate}
+                                        instruction='Start date of prediction'
+                                    />
+
+                                    <DatePickerComponent
+                                        selectedDate={endDate}
+                                        setSelectedDate={setEndDate}
+                                        instruction='End date of prediction'
+                                    />
+                                </div>}
+
+                                {filters.map((section) => ((selectedFilters.category.includes('general') || section.id !== 'locRadius') &&
                                     <Disclosure as="div" key={section.id} className="border-b border-gray-200 dark:border-gray-600 py-6">
                                         {({ open }) => (
                                             <>
@@ -402,7 +653,7 @@ export default function Explore() {
                                                                     name={`${section.id}[]`}
                                                                     value={option.value}
                                                                     type="checkbox"
-                                                                    defaultChecked={option.checked}
+                                                                    checked={selectedFilters[section.id].includes(option.value)}
                                                                     className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
                                                                     onChange={() => handleFilterChange(section.id, option.value)}
                                                                 />
@@ -423,45 +674,30 @@ export default function Explore() {
                             </form>
 
                             {/* Product grid */}
-                            <div className="lg:col-span-3 text-black dark:text-white">
-                                <div className=" w-full relative max-w-xs">
-                                    <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-teal-500 transform scale-[0.80] bg-red-500 rounded-full blur-3xl" />
-                                    <div className="relative shadow-xl bg-gray-900 border border-gray-800  px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col justify-end items-start">
-                                        <div className="h-5 w-5 rounded-full border flex items-center justify-center mb-4 border-gray-500">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth="1.5"
-                                                stroke="currentColor"
-                                                className="h-2 w-2 text-gray-300"
+                            <div className="lg:col-span-3 text-black dark:text-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto h-screen p-4">
+                                {searchedNewsFeed.map((item) => (
+                                    <div className="w-full relative max-w-xs h-[20em]" key={item.contentId}>
+                                        <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-teal-500 transform scale-[0.80] bg-red-500 rounded-full blur-3xl" />
+                                        <div className="relative shadow-xl bg-gray-900 border border-gray-800 px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col items-start">
+                                            <h1 className="font-bold text-xl text-white mb-4 relative">
+                                                {item.title}
+                                            </h1>
+                                            <p className="font-normal text-base text-slate-500 mb-4 relative break-words whitespace-normal">
+                                                {`${item.article.split(' ').slice(0, item.visibleWords).join(' ')}...`}
+                                            </p>
+                                            <p className='text-gray-400 absolute bottom-[5.3rem] left-6'>User Rating: {item.userRating}</p>
+                                            <p className='text-gray-400 absolute bottom-[4rem] left-6'>AI Rating: {item.aiRating}</p>
+                                            <button
+                                                className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300 absolute bottom-6"
+                                                onClick={() => handlePayForArticle(item.contentId)}
                                             >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25"
-                                                />
-                                            </svg>
+                                                View More
+                                            </button>
+                                            {/* Meteor effect */}
+                                            <Meteors number={20} />
                                         </div>
-
-                                        <h1 className="font-bold text-xl text-white mb-4 relative z-50">
-                                            Meteors because they&apos;re cool
-                                        </h1>
-
-                                        <p className="font-normal text-base text-slate-500 mb-4 relative z-50">
-                                            I don&apos;t know what to write so I&apos;ll just paste something
-                                            cool here. One more sentence because lorem ipsum is just
-                                            unacceptable. Won&apos;t ChatGPT the shit out of this.
-                                        </p>
-
-                                        <button className="border px-4 py-1 rounded-lg  border-gray-500 text-gray-300">
-                                            Explore
-                                        </button>
-
-                                        {/* Meaty part - Meteor effect */}
-                                        <Meteors number={20} />
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </section>

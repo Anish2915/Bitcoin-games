@@ -1,0 +1,12 @@
+import React from 'react';
+
+export default function Licensing() {
+    return (
+        <section>
+            <h1>Licensing</h1>
+            <p
+                className='h-[20em] overflow-scroll'
+            >Lorem ipsum dolor sit amet consectetur adipisicing elit. In deleniti alias ipsa accusamus impedit odio ab optio nisi esse perspiciatis dolore asperiores, temporibus quidem molestiae consequuntur voluptatibus tenetur. Libero perferendis ullam ratione veniam est iusto saepe minus, accusamus esse illum ipsa perspiciatis quos aperiam velit deleniti nobis vero in quae, assumenda ducimus enim aut odio nemo? Vel culpa ea obcaecati facere impedit hic porro ullam quos. Vero nihil dolor inventore aperiam neque dolores magnam ducimus blanditiis consequuntur ad aliquid rerum, autem, quod adipisci, illo id temporibus error earum cupiditate atque in delectus. Reiciendis odio accusantium sit cum, aperiam nostrum fugit porro assumenda, minus minima error dolores voluptatum. Expedita nemo accusantium exercitationem reprehenderit animi quas odit minus dicta dignissimos assumenda possimus adipisci unde accusamus sequi impedit, aliquid voluptatem ab vero in! Itaque doloribus deleniti accusamus ut ullam, totam facilis sint dicta harum repellendus ab neque obcaecati laboriosam magni eum autem recusandae non dolorem officia distinctio culpa quaerat. Repellat sapiente numquam ab similique vel. Quisquam dicta quaerat doloremque, amet quas commodi obcaecati sit impedit, id enim reprehenderit pariatur eum quae ea temporibus consequuntur similique ducimus libero ullam corrupti sequi veniam culpa perferendis? Unde, amet eligendi voluptas minima temporibus officia! Facere reiciendis, aliquam quo eaque, culpa suscipit atque minima recusandae sed hic mollitia non voluptas eos! Possimus, iure distinctio quia ea suscipit magni deserunt nesciunt placeat libero cumque maiores laudantium provident dignissimos sit eos aliquid laboriosam fugiat eligendi quasi mollitia aperiam non eaque impedit. Totam, saepe suscipit et facere earum culpa nostrum provident voluptatum porro, enim hic quasi repellendus quia quidem officiis quibusdam, ipsum velit eaque corrupti deleniti. Voluptas, eum adipisci numquam blanditiis aliquid ex quod dolore molestiae quo. Velit officia aut quisquam, odio tenetur quis repellendus ipsam repudiandae beatae, labore molestias voluptatibus perferendis sint impedit quos nulla quasi omnis sed, maiores unde.</p>
+        </section>
+    )
+}

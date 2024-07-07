@@ -11,6 +11,7 @@ import Explore from './pages/Explore';
 import Profile from './pages/Profile';
 import NewsPage from './pages/NewsPage';
 import Finance from './pages/Finance';
+import AboutUs from './pages/AboutUs';
 
 // Importing components
 import Navbar from './components/Navbar';
@@ -33,6 +34,7 @@ export default function App() {
           <Route path='/profile/:userAdd' element={<Profile />} />
           <Route path='/newsFeed/:feedId' element={<NewsPage />} />
           <Route path='/finance' element={<Finance />} />
+          <Route path='/aboutus' element={<AboutUs />} />
         </Routes>
         <Footer />
       </BrowserRouter>

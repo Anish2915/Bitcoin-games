@@ -10,7 +10,7 @@ export default function ModalPopup({ isOpen, onRequestClose, title, children }) 
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel={title}
-      className="fixed inset-0 flex items-center justify-center p-4"
+      className="fixed inset-0 flex items-center justify-center p-4 z-[10000]"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50"
     >
       <div className="bg-white p-4 rounded-md shadow-md w-full max-w-lg">

@@ -9,7 +9,7 @@ import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
 const contractABI = ArticleStorage.abi;
-const contractAddress = '0xYourContractAddressHere';
+const contractAddress = '0xCcE7b71425532E95009114573Aaf0d7D001295b5';
 const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 async function getProvider() {

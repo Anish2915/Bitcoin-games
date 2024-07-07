@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 // Importing components
 import DatePickerComponent from '../components/DatePickerComponent';
@@ -9,7 +10,7 @@ import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
 const contractABI = ArticleStorage.abi;
-const contractAddress = '0xCcE7b71425532E95009114573Aaf0d7D001295b5';
+const contractAddress = '0x81e6525bf7ef5df234dd71ce613d58d786e9673a';
 const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 async function getProvider() {
@@ -45,6 +46,7 @@ export default function Publish() {
         'Tags': ['Article', 'Stock'],
         'Article': null
     });
+    const [uploadedFile, setUploadedFile] = useState(null);
 
     const handleTitleChange = (e) => {
         setArticleDetails(prevState => ({
@@ -78,21 +80,25 @@ export default function Publish() {
     };
 
     const handleArticleChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const content = e.target.result;
-                setArticleDetails(prevState => ({
-                    ...prevState,
-                    Article: content,
-                }))
-            };
-            reader.readAsArrayBuffer(file);
+        const newFile = event.target.files[0];
+        let validFile = null;
+        if (newFile.type === 'application/pdf' || newFile.type === 'application/msword') {
+            validFile = newFile;
+            setUploadedFile(validFile);
+        } else {
+            setUploadedFile(null);
         }
     };
 
-    const handleStockSubmit = async  () => {
+    const handleArticleTextChange = (e) => {
+        setArticleDetails(prevState => ({
+            ...prevState,
+            Article: e.target.value,
+        }));
+    }
+
+    const handleStockSubmit = async (e) => {
+        e.preventDefault();
         console.log('Printing here!')
         const contract = await getContract();
         if (contract) {
@@ -102,8 +108,8 @@ export default function Publish() {
                     articleDetails.Article,
                     articleDetails.VisibleLimit,
                     articleDetails.Price,
-                    0, // Assuming aiRating
-                    0, // Assuming userRating
+                    5, // Assuming aiRating
+                    3, // Assuming userRating
                     Math.floor(startDate.getTime() / 1000),
                     Math.floor(endDate.getTime() / 1000)
                 );
@@ -115,7 +121,8 @@ export default function Publish() {
         }
     }
 
-    const handleGeneralSubmit = async () => {
+    const handleGeneralSubmit = async (e) => {
+        e.preventDefault();
         const contract = await getContract();
         if (contract) {
             try {
@@ -136,6 +143,31 @@ export default function Publish() {
             }
         }
     };
+
+    useEffect(() => {
+        const getTextFromPDF = async () => {
+            try {
+                const formData = new FormData();
+                formData.append('file', uploadedFile);
+                const response = await axios.post('/get_pdf_text', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                if (response.data) {
+                    const data = await response.data.output;
+                    setArticleDetails(prevState => ({
+                        ...prevState,
+                        Article: data,
+                    }))
+                }
+            } catch (error) {
+                console.log('Error getting text from PDF: ', error.message);
+            }
+        }
+
+        getTextFromPDF();
+    }, [uploadedFile])
 
     return (
         <main className='bg-white dark:bg-black mt-28 flex flex-col pb-12'>
@@ -249,12 +281,22 @@ export default function Publish() {
                                         </div>
                                         <input
                                             id="dropzone-file"
-                                            value={articleDetails.Article}
+                                            // value={uploadedFile}
                                             onChange={handleArticleChange}
                                             type="file"
                                             className="hidden"
                                         />
                                     </label>
+                                </div>
+
+                                <div>
+                                    <textarea
+                                        name="article"
+                                        id="article"
+                                        className='my-6 shadow-md bg-gray-300 dark:bg-gray-600 w-full h-[20em] p-4 rounded-xl text-neutral-800 dark:text-neutral-200'
+                                        value={articleDetails.Article}
+                                        onChange={handleArticleTextChange}
+                                    >You can write you text here</textarea>
                                 </div>
 
                                 <div className="flex items-start mb-6 mt-6">
@@ -344,12 +386,22 @@ export default function Publish() {
                                         </div>
                                         <input
                                             id="dropzone-file"
-                                            value={articleDetails.Article}
+                                            // value={uploadedFile}
                                             onChange={handleArticleChange}
                                             type="file"
                                             className="hidden"
                                         />
                                     </label>
+                                </div>
+
+                                <div>
+                                    <textarea
+                                        name="article"
+                                        id="article"
+                                        className='my-6 shadow-md bg-gray-300 dark:bg-gray-600 w-full h-[20em] p-4 rounded-xl text-neutral-800 dark:text-neutral-200'
+                                        value={articleDetails.Article}
+                                        onChange={handleArticleTextChange}
+                                    >You can write you text here</textarea>
                                 </div>
 
                                 <div className="flex items-start mb-6 mt-6">

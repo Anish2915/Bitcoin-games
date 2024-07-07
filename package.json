@@ -5,10 +5,12 @@
   "dependencies": {
     "@headlessui/react": "^2.1.1",
     "@heroicons/react": "^2.1.4",
+    "@metamask/detect-provider": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@truffle/hdwallet-provider": "^2.1.15",
+    "axios": "^1.7.2",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "ethers": "^5.7.2",

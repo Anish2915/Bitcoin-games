@@ -108,7 +108,7 @@ export default function Home() {
     // }, [])
 
     return (
-        <main className='text-black bg-white dark:text-white dark:bg-black mt-6'>
+        <main className='text-black bg-white dark:text-white dark:bg-black mt-2'>
             <HeroParallax
                 products={newsFeed}
                 headingPara='A decentralized news feed platform to keep you updated with the latest news and trends

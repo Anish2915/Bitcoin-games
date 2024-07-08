@@ -2,9 +2,31 @@ import React from 'react';
 
 export default function TermsAndConditions() {
     return (
-        <section className='text-black bg-white dark:text-white dark:bg-black'>
-            <h1>Terms and Conditions</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum culpa, provident dicta consequuntur maxime delectus rerum eligendi, autem doloremque quis at nulla architecto commodi libero, tempore quos consequatur tenetur tempora maiores sed eveniet error sit! Perferendis, quisquam officia perspiciatis earum voluptatibus maxime excepturi possimus repellendus et molestias deleniti! Sit recusandae illo quis adipisci a illum quam, quibusdam doloribus, corrupti quae omnis libero molestiae accusamus iusto dolorum quo natus tempore itaque! In dolorum obcaecati dicta laborum minus magnam. Ea hic vel ratione accusamus amet, deleniti at, sequi iste, ab enim optio aspernatur perspiciatis ducimus corrupti impedit. Fuga porro assumenda veritatis, odit neque, eum, consequatur ratione accusamus temporibus obcaecati reiciendis nesciunt amet molestiae consequuntur nostrum sequi excepturi sunt expedita quibusdam illo non blanditiis a? Consectetur laborum nesciunt minus porro eius! Tenetur, consectetur totam! Consectetur illum ut earum ducimus dolorem impedit rerum optio explicabo temporibus quasi quae quia quod odio pariatur dolore esse hic atque itaque, laborum deserunt reiciendis delectus laudantium quibusdam? Accusamus corporis optio illum voluptas atque, doloribus officiis deleniti eum cum quos. Explicabo voluptate ratione nesciunt quis officia ut eveniet saepe molestias, nam iure incidunt? Nesciunt suscipit fuga possimus, saepe, sit ipsa fugit laboriosam sunt officiis facere, fugiat sed ea excepturi!</p>
+        <section className="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 p-6 rounded-lg text-gray-800 max-h-[80vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Terms and Conditions</h2>
+            <p className="mb-4">
+                Welcome to our website. If you continue to browse and use this website, you are agreeing to comply with and be bound by the following terms and conditions of use, which together with our privacy policy govern [Your Company Name]'s relationship with you in relation to this website. If you disagree with any part of these terms and conditions, please do not use our website.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">Use of the Website</h3>
+            <p className="mb-4">
+                The content of the pages of this website is for your general information and use only. It is subject to change without notice.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">Intellectual Property</h3>
+            <p className="mb-4">
+                This website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance, and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">Limitation of Liability</h3>
+            <p className="mb-4">
+                Your use of any information or materials on this website is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services or information available through this website meet your specific requirements.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">Governing Law</h3>
+            <p className="mb-4">
+                These terms and conditions are governed by and construed in accordance with the laws of [Your Country/State] and you irrevocably submit to the exclusive jurisdiction of the courts in that State or location.
+            </p>
         </section>
-    )
+    );
 }

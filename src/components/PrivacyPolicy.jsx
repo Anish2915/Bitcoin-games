@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function PrivacyPolicy() {
     return (
-        <div className="bg-gradient-to-br from-yellow-100 via-red-100 to-pink-100 p-6 rounded-lg text-gray-800 max-h-[80vh] overflow-y-auto">
+        <section className="bg-gradient-to-br from-yellow-100 via-red-100 to-pink-100 p-6 rounded-lg text-gray-800 max-h-[80vh] overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4 text-gray-900">Privacy Policy</h2>
             <p className="mb-4">
                 This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website. Please read this privacy policy carefully.
@@ -60,6 +60,6 @@ export default function PrivacyPolicy() {
                 City, State, Zip Code <br />
                 Email: <a href="mailto:info@company.com" className="text-blue-500">info@company.com</a>
             </p>
-        </div>
+        </section>
     );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Licensing() {
     return (
-        <div className="bg-gradient-to-br from-green-100 via-yellow-100 to-orange-100 p-6 rounded-lg text-gray-800 max-h-[80vh] overflow-y-auto">
+        <section className="bg-gradient-to-br from-green-100 via-yellow-100 to-orange-100 p-6 rounded-lg text-gray-800 max-h-[80vh] overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4 text-gray-900">Licensing Information</h2>
             <p className="mb-4">
                 This Licensing Information section explains the terms and conditions under which our products and services are licensed to you. Please read this information carefully.
@@ -27,6 +27,6 @@ export default function Licensing() {
             <p className="mb-4">
                 Your license may be terminated if you fail to comply with the terms of the License Agreement. Upon termination, you must cease all use of our products and services and destroy any copies in your possession.
             </p>
-        </div>
+        </section>
     );
 }

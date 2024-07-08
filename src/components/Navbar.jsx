@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import detectEthereumProvider from '@metamask/detect-provider';
 
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
@@ -22,43 +22,44 @@ function classNames(...classes) {
 export default function Navbar({ account, setAccount }) {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleAccountsChanged = async (accounts) => {
-      if (accounts.length === 0) {
-        console.log('Please connect to MetaMask!');
-        setAccount('0x0')
-      } else if (accounts[0] !== account) {
-        setAccount(account[0]);
-      }
-    }
+  // useEffect(() => {
+  //   const handleAccountsChanged = async (accounts) => {
+  //     if (accounts.length === 0) {
+  //       console.log('Please connect to MetaMask!');
+  //       setAccount('0x0')
+  //     } else if (accounts[0] !== account) {
+  //       setAccount(account[0]);
+  //     }
+  //   }
 
-    const handleChainChanged = () => {
-      window.location.reload();
-    }
+  //   const handleChainChanged = () => {
+  //     window.location.reload();
+  //   }
 
-    const connectWallet = async () => {
-      const provider = await detectEthereumProvider();
-      if (provider) {
-        const accounts = await provider.request({ method: 'eth_requestAccounts' });
-        setAccount(accounts[0]);
+  //   const connectWallet = async () => {
+  //     const provider = await detectEthereumProvider();
+  //     if (provider) {
+  //       const accounts = await provider.request({ method: 'eth_requestAccounts' });
+  //       setAccount(accounts[0]);
 
-        window.ethereum.on('accountsChanged', handleAccountsChanged);
-        window.ethereum.on('chainChanged', handleChainChanged);
-      } else {
-        console.log('Please install MetaMask!');
-      }
-    }
+  //       window.ethereum.on('accountsChanged', handleAccountsChanged);
+  //       window.ethereum.on('chainChanged', handleChainChanged);
+  //     } else {
+  //       console.log('Please install MetaMask!');
+  //     }
+  //   }
 
-    connectWallet();
+  //   connectWallet();
 
-    return () => {
-      if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        window.ethereum.removeListener('chainChanged', handleChainChanged);
-      }
-    }
-  }, [account, setAccount]);
+  //   return () => {
+  //     if (window.ethereum) {
+  //       window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+  //       window.ethereum.removeListener('chainChanged', handleChainChanged);
+  //     }
+  //   }
+  // }, [account, setAccount]);
 
   const handleWalletConnection = async () => {
     const provider = await detectEthereumProvider();
@@ -68,6 +69,12 @@ export default function Navbar({ account, setAccount }) {
     } else {
       console.log('Please install MetaMask!')
     }
+  }
+
+  const handleWalletDisconnection = () => {
+    // window.ethereum.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] });
+    setAccount('0x0');
+    navigate('/');
   }
   
   useEffect(() => {
@@ -157,14 +164,14 @@ export default function Navbar({ account, setAccount }) {
                       <MenuItem>
                         {({ focus }) => (
                           <Link
-                            href="/profile/:userAdd"
-                            className={classNames(focus ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            to={`/profile/${account}`}
+                            className={classNames(focus ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer')}
                           >
                             Your Profile
                           </Link>
                         )}
                       </MenuItem>
-                      <MenuItem>
+                      {/* <MenuItem>
                         {({ focus }) => (
                           <Link
                             href="/"
@@ -173,15 +180,15 @@ export default function Navbar({ account, setAccount }) {
                             Settings
                           </Link>
                         )}
-                      </MenuItem>
+                      </MenuItem> */}
                       <MenuItem>
                         {({ focus }) => (
-                          <Link
-                            href="/"
-                            className={classNames(focus ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                          <div
+                            onClick={handleWalletDisconnection}
+                            className={classNames(focus ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer')}
                           >
                             Sign out
-                          </Link>
+                          </div>
                         )}
                       </MenuItem>
                     </MenuItems>

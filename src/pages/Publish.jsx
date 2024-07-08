@@ -4,6 +4,8 @@ import axios from 'axios';
 // Importing components
 import DatePickerComponent from '../components/DatePickerComponent';
 import LocationPicker from '../components/MapPicker';
+import ModalPopup from '../components/ModalPopup';
+import TermsAndConditions from '../components/TermsAndConditions';
 
 // import { set } from 'date-fns';
 import ArticleStorage from '../contracts/ArticleStorage.json'
@@ -48,6 +50,16 @@ export default function Publish() {
         'BgImg': ''
     });
     const [uploadedFile, setUploadedFile] = useState(null);
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    }
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    }
 
     const handleTitleChange = (e) => {
         setArticleDetails(prevState => ({
@@ -107,6 +119,10 @@ export default function Publish() {
 
     const handleStockSubmit = async (e) => {
         e.preventDefault();
+        if (termsAccepted === false) {
+            alert('Please accept the terms and conditions to proceed!');
+            return;
+        }
         console.log('Printing here!')
         const contract = await getContract();
         if (contract) {
@@ -131,6 +147,10 @@ export default function Publish() {
 
     const handleGeneralSubmit = async (e) => {
         e.preventDefault();
+        if (termsAccepted === false) {
+            alert('Please accept the terms and conditions to proceed!');
+            return;
+        }
         const contract = await getContract();
         if (contract) {
             try {
@@ -321,10 +341,21 @@ export default function Publish() {
 
                                 <div className="flex items-start mb-6 mt-6">
                                     <div className="flex items-center h-5">
-                                        <input id="remember" type="checkbox" value="" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required />
+                                        <input
+                                            id="remember"
+                                            type="checkbox"
+                                            value={termsAccepted}
+                                            checked={termsAccepted}
+                                            onChange={() => setTermsAccepted(!termsAccepted)}
+                                            className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                                            required
+                                        />
                                     </div>
-                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="/" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
+                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <span onClick={openModal} className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</span>.</label>
                                 </div>
+                                <ModalPopup isOpen={isModalOpen} onRequestClose={closeModal} title="Terms And Conditions">
+                                    <TermsAndConditions />
+                                </ModalPopup>
                                 <button type="submit" className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2 w-36 h-12">Publish</button>
                             </div>
                         </form>
@@ -438,10 +469,21 @@ export default function Publish() {
 
                                 <div className="flex items-start mb-6 mt-6">
                                     <div className="flex items-center h-5">
-                                        <input id="remember" type="checkbox" value="" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required />
+                                        <input
+                                            id="remember"
+                                            type="checkbox"
+                                            value={termsAccepted}
+                                            checked={termsAccepted}
+                                            onChange={() => setTermsAccepted(!termsAccepted)}
+                                            className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                                            required
+                                        />
                                     </div>
-                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="/" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
+                                    <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <span onClick={openModal} className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</span>.</label>
                                 </div>
+                                <ModalPopup isOpen={isModalOpen} onRequestClose={closeModal} title="Terms And Conditions">
+                                    <TermsAndConditions />
+                                </ModalPopup>
                                 <button type="submit" className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2 w-36 h-12">Publish</button>
                             </div>
                         </form>

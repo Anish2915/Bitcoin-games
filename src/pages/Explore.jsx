@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Dialog,
     DialogBackdrop,
@@ -81,6 +82,7 @@ function classNames(...classes) {
 }
 
 export default function Explore() {
+    const navigate = useNavigate();
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [position, setPosition] = useState(null);
@@ -99,7 +101,8 @@ export default function Explore() {
             startDate: new Date(),
             endDate: new Date(),
             userRating: 8,
-            aiRating: 6.2
+            aiRating: 6.2,
+            bgImg: ''
         }, {
             contentId: 2,
             title: 'Bitcoin Price',
@@ -112,7 +115,8 @@ export default function Explore() {
             startDate: new Date(),
             endDate: new Date(),
             userRating: 5,
-            aiRating: 6
+            aiRating: 6,
+            bgImg: ''
         }, {
             contentId: 3,
             title: 'Clashes in Manipur',
@@ -127,7 +131,8 @@ export default function Explore() {
                 long: 93.936844
             },
             userRating: 3,
-            aiRating: 9
+            aiRating: 9,
+            bgImg: ''
         }, {
             contentId: 4,
             title: 'Stock Market Crash',
@@ -140,7 +145,8 @@ export default function Explore() {
             startDate: new Date(),
             endDate: new Date(),
             userRating: 9.4,
-            aiRating: 7.1
+            aiRating: 7.1,
+            bgImg: ''
         }
     ]); // Initialize state for news feed
     const [filteredNewsFeed, setFilteredNewsFeed] = useState([]); // State for filtered news feed
@@ -165,7 +171,7 @@ export default function Explore() {
 
     // Implement the payment for the article here
     const handlePayForArticle = (contentId) => {
-        console.log(contentId);
+        navigate(`/newsFeed/${contentId}`);
     }
 
     const openModal = (e) => {

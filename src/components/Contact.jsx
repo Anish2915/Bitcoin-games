@@ -1,12 +1,129 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import emailjs from 'emailjs-com';
 
 export default function Contact() {
+    const form = useRef();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
+    const [sending, setSending] = useState(false);
+    const [sent, setSent] = useState(false);
+
+    const handleContactSubmit = (e) => {
+        e.preventDefault();
+        setSending(true);
+
+        const SERVICE_ID = process.env.REACT_APP_SERVICE_ID;
+        const TEMPLATE_ID = process.env.REACT_APP_TEMPLATE_ID;
+        const PUBLIC_KEY = process.env.REACT_APP_PUBLIC_KEY;
+        emailjs
+            .sendForm(SERVICE_ID, TEMPLATE_ID, form.current, PUBLIC_KEY)
+            .then(
+                () => {
+                    setSending(false);
+                    setSent(true);
+                    setName('');
+                    setEmail('');
+                    setMessage('')
+                },
+                (error) => {
+                    setSending(false);
+                    setSent(false);
+                    console.log('Failed to send email. Error: ', error);
+                },
+            );
+    };
+
+    useEffect(() => {
+        if (sent === true) {
+            const timer = setTimeout(() => {
+                setSent(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+
+    }, [sent])
+
     return (
-        <section>
-            <h1>Contact</h1>
-            <p
-                className='h-[20em] overflow-scroll'
-            >Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia repellendus molestiae exercitationem neque dolorum tempore unde excepturi molestias sequi, quis odio minima odit, impedit voluptatibus ex modi nobis fugiat corporis tenetur facere eaque autem, ipsum quidem! Nam blanditiis natus fuga ut? Repudiandae in doloremque delectus similique autem aperiam? Ducimus nam sed tenetur magni cum provident. Facilis, veritatis, enim aut pariatur perferendis consequuntur non, cumque optio ex reiciendis quasi magni deleniti cum. Tempore adipisci quaerat animi ad modi odit voluptatibus, dolores totam corrupti a reiciendis, nulla non eos nam error perspiciatis. Animi unde odit exercitationem iste obcaecati magnam fuga voluptatem sapiente quisquam asperiores. Voluptatem amet libero nulla. Dolor reprehenderit ullam tempore minima, consequuntur labore aperiam ipsum, sed, ratione voluptate consequatur maiores eos libero expedita voluptatibus iste quaerat perspiciatis! Iusto quis recusandae doloremque eaque molestiae vel sequi quia accusantium doloribus ullam accusamus dicta eos magnam animi modi, ea quidem nostrum fugiat, totam voluptatum officia nisi neque nam. Optio, totam? Accusamus, voluptatem delectus quisquam similique nam mollitia dolores, dolorem assumenda corporis in necessitatibus, beatae incidunt doloremque commodi quia. Velit culpa impedit aspernatur quis dolore harum accusamus, ex provident beatae, deleniti quod alias! Dolor architecto ipsa corporis numquam atque ipsam quos dolore in, ea magnam laudantium sed cum eos qui quas iste commodi molestias exercitationem. Quisquam natus quibusdam quae, repudiandae ea inventore ipsam voluptatum corporis, eos dolor delectus pariatur placeat aperiam, eligendi earum esse rerum ad ullam similique! Repellendus, blanditiis quia ratione aspernatur, totam itaque animi eum fuga esse quasi doloremque laboriosam quidem? Dolorem autem ut quos, expedita, rem mollitia suscipit asperiores quisquam corrupti, fugit sed dolore. Perspiciatis, officia culpa alias perferendis possimus quia et nesciunt quos est, eos laborum fugiat nostrum ad, quis molestiae qui vitae quod. Minima nesciunt, quaerat assumenda unde impedit eligendi omnis pariatur enim voluptatibus voluptas, harum, consequatur quidem laboriosam animi placeat odio eius sed nihil voluptate saepe! Nulla, dicta maiores a assumenda nisi quasi autem commodi error cum porro inventore, sunt culpa necessitatibus velit tempora facilis? Amet molestiae illo voluptatibus blanditiis aspernatur odio minima numquam totam fugiat, voluptas nam illum corrupti id iusto cupiditate sed repellendus obcaecati! Asperiores facilis voluptatibus veritatis ipsa unde beatae ex vel sequi molestias in. Ipsam eveniet, dolorem quia et ipsum distinctio sit reprehenderit id quasi autem voluptatibus, error in quae blanditiis? Totam praesentium culpa aut placeat nemo, tenetur nesciunt dolor ab debitis fugit molestias est quia voluptatibus nam itaque, dolore tempore? Fugiat, distinctio at.</p>
-        </section>
-    )
+        <div className="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 p-6 rounded-lg text-gray-800 max-h-[80vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Contact Us</h2>
+
+            <form
+                ref={form}
+                onSubmit={handleContactSubmit}
+                className="space-y-4"
+            >
+                <div>
+                    <label htmlFor="user_name" className="block text-sm font-medium text-gray-900">
+                        Name
+                    </label>
+                    <input
+                        type="text"
+                        id="user_name"
+                        name="user_name"
+                        className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:text-white p-2"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="user_email" className="block text-sm font-medium text-gray-900">
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        id="user_email"
+                        name="user_email"
+                        className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:text-white p-2"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-900">
+                        Message
+                    </label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="4"
+                        className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:text-white p-2"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                    ></textarea>
+                </div>
+                <div className="flex justify-end">
+                    <button
+                        type="submit"
+                        className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${sending ? 'bg-gray-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                        disabled={sending}
+                    >
+                        {sending ? 'Sending...' : 'Send Message'}
+                    </button>
+                </div>
+                {sent && (
+                    <div className="text-green-600 mt-2">
+                        Email sent successfully! We will get back to you soon.
+                    </div>
+                )}
+            </form>
+
+            <div className="mt-8">
+                <p className="text-gray-900">
+                    For any inquiries or questions, please reach out to us using the form above. We typically respond within 1-2 business days.
+                </p>
+                <p className="text-gray-900 mt-2">
+                    You can also contact us directly at:
+                </p>
+                <p className="text-gray-900 mt-1">
+                    Company Name <br />
+                    Address <br />
+                    City, State, Zip Code <br />
+                    Email: <a href="mailto:info@company.com" className="text-blue-500">info@company.com</a> <br />
+                    Phone: <span className="text-blue-500">+1234567890</span>
+                </p>
+            </div>
+        </div>
+    );
 }

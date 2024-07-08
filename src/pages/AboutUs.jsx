@@ -1,10 +1,56 @@
-import React from 'react'
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export default function AboutUs() {
-  return (
-    <main className='text-black bg-white dark:bg-black dark:text-white mt-20 mx-6 p-4 shadow-md rounded-xl shadow-neutral-700 dark:shadow-neutral-100'>
-      <h1>About Us</h1>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, perspiciatis sapiente? Nam velit sunt at odio delectus, quisquam doloremque soluta, officiis eligendi nihil corporis nostrum dolor quod laboriosam voluptatibus iusto vitae. Magni earum provident possimus quidem quae, labore deserunt, voluptate asperiores totam natus nam voluptates quo at, voluptatum architecto quaerat perferendis ullam minima tenetur perspiciatis facilis tempore a nulla neque. Repellendus officiis, perspiciatis optio velit itaque ex a sint culpa perferendis ducimus, ad recusandae ea dolore inventore repudiandae laborum explicabo corrupti impedit. Ipsum itaque dolorem fugit aliquam deserunt, cum quaerat impedit dolore illum dolores obcaecati? Sunt dolores laudantium quasi. At omnis blanditiis amet eligendi quae iusto vel perferendis architecto aut perspiciatis enim minima iure inventore quod expedita praesentium eveniet aliquid ratione, ipsum quidem hic aperiam? Amet, temporibus. Eum esse, mollitia nemo eaque molestiae, sed corrupti itaque porro tempora sint optio voluptatibus velit quas quis. Debitis, nihil, blanditiis suscipit itaque adipisci assumenda nostrum, nobis nisi hic saepe laudantium rerum ut quibusdam ducimus dicta eligendi sit impedit nulla corrupti consequatur praesentium ratione deserunt magnam? Minus dolorem sunt inventore ab, fuga placeat quas aperiam accusantium facilis cupiditate, libero ipsum iure consectetur similique quasi alias? Animi error incidunt nostrum amet unde inventore culpa totam dolores in ea minima deleniti voluptatibus aliquid, non accusamus nesciunt explicabo similique. Iure cum ex nobis? Blanditiis beatae, atque qui saepe velit doloribus perspiciatis non sed eveniet, modi aspernatur fugiat eaque amet quasi. Non voluptates adipisci iste soluta aliquam ipsum provident minus delectus velit veniam optio odit quasi debitis, laboriosam dolorum at saepe sunt eaque? Consequatur exercitationem sequi vero minima nam hic, nemo error! Pariatur dolores voluptatem tenetur accusamus vel. Quisquam alias omnis, illo voluptas nulla rerum ab consectetur iste illum dignissimos. Accusamus, pariatur atque quidem eius odio doloremque obcaecati aliquam similique quia, sint ut quo, molestias nemo! Sit, explicabo.
-    </main>
-  )
+    return (
+        <main className="text-black bg-white dark:text-white dark:bg-black mt-24 min-h-screen">
+            <div className="w-[70%] mx-auto p-8 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1 }}
+                    className="text-center mb-8"
+                >
+                    <h1 className="text-4xl font-bold mb-4">About Us</h1>
+                    <p className="text-xl text-gray-700 dark:text-gray-300">
+                        We are dedicated to providing the latest news and insights across various domains.
+                    </p>
+                </motion.div>
+                
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    className="flex flex-col md:flex-row md:space-x-6"
+                >
+                    <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="mb-6 md:mb-0"
+                    >
+                        <img
+                            src="/pageBackground/generalBg.jpg"
+                            alt="Team"
+                            className="w-full h-64 object-cover rounded-lg"
+                        />
+                    </motion.div>
+                    
+                    <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1, delay: 0.5 }}
+                        className="flex-1"
+                    >
+                        <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
+                        <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-4">
+                            Our mission is to provide accurate and timely news articles to keep our audience informed about the latest events and trends. We cover a wide range of topics including finance, technology, health, and more.
+                        </p>
+                        <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
+                        <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+                            We envision a world where everyone has access to reliable information and can stay updated with the most recent developments. We strive to be the trusted source for news and knowledge.
+                        </p>
+                    </motion.div>
+                </motion.div>
+            </div>
+        </main>
+    );
 }

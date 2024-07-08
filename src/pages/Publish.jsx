@@ -44,7 +44,8 @@ export default function Publish() {
         'VisibleLimit': 20,
         'Price': 1e18,
         'Tags': ['Article', 'Stock'],
-        'Article': null
+        'Article': '',
+        'BgImg': ''
     });
     const [uploadedFile, setUploadedFile] = useState(null);
 
@@ -78,6 +79,13 @@ export default function Publish() {
             Tags: tagsArray,
         }));
     };
+
+    const handleBgChange = (e) => {
+        setArticleDetails(prevState => ({
+            ...prevState,
+            BgImg: e.target.value,
+        }));
+    }
 
     const handleArticleChange = (event) => {
         const newFile = event.target.files[0];
@@ -269,6 +277,18 @@ export default function Publish() {
                                         required
                                     />
                                 </div>
+                                <div className="mb-6">
+                                    <label for="tags" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Background Image link</label>
+                                    <input
+                                        type="text"
+                                        value={articleDetails.BgImg}
+                                        onChange={handleBgChange}
+                                        id="tags"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Enter the image link to be displayed as background image of the news article"
+                                        required
+                                    />
+                                </div>
 
                                 <div className="flex items-center justify-center w-full">
                                     <label for="dropzone-file" className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500">
@@ -371,6 +391,18 @@ export default function Publish() {
                                         id="tags"
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="Tags for the better search of the news article (enter comma seperated tags)"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label for="tags" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Background Image link</label>
+                                    <input
+                                        type="text"
+                                        value={articleDetails.BgImg}
+                                        onChange={handleBgChange}
+                                        id="tags"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Enter the image link to be displayed as background image of the news article"
                                         required
                                     />
                                 </div>

@@ -96,7 +96,7 @@ export default function Navbar({ account, setAccount }) {
                 <div className="flex flex-shrink-0 items-center">
                   <img
                     className="h-10 w-auto rounded-lg"
-                    src="./logoChn.png"
+                    src="/logoChn.png"
                     alt="Chain Sphere"
                   />
                 </div>

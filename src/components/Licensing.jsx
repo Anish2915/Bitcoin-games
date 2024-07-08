@@ -2,11 +2,31 @@ import React from 'react';
 
 export default function Licensing() {
     return (
-        <section>
-            <h1>Licensing</h1>
-            <p
-                className='h-[20em] overflow-scroll'
-            >Lorem ipsum dolor sit amet consectetur adipisicing elit. In deleniti alias ipsa accusamus impedit odio ab optio nisi esse perspiciatis dolore asperiores, temporibus quidem molestiae consequuntur voluptatibus tenetur. Libero perferendis ullam ratione veniam est iusto saepe minus, accusamus esse illum ipsa perspiciatis quos aperiam velit deleniti nobis vero in quae, assumenda ducimus enim aut odio nemo? Vel culpa ea obcaecati facere impedit hic porro ullam quos. Vero nihil dolor inventore aperiam neque dolores magnam ducimus blanditiis consequuntur ad aliquid rerum, autem, quod adipisci, illo id temporibus error earum cupiditate atque in delectus. Reiciendis odio accusantium sit cum, aperiam nostrum fugit porro assumenda, minus minima error dolores voluptatum. Expedita nemo accusantium exercitationem reprehenderit animi quas odit minus dicta dignissimos assumenda possimus adipisci unde accusamus sequi impedit, aliquid voluptatem ab vero in! Itaque doloribus deleniti accusamus ut ullam, totam facilis sint dicta harum repellendus ab neque obcaecati laboriosam magni eum autem recusandae non dolorem officia distinctio culpa quaerat. Repellat sapiente numquam ab similique vel. Quisquam dicta quaerat doloremque, amet quas commodi obcaecati sit impedit, id enim reprehenderit pariatur eum quae ea temporibus consequuntur similique ducimus libero ullam corrupti sequi veniam culpa perferendis? Unde, amet eligendi voluptas minima temporibus officia! Facere reiciendis, aliquam quo eaque, culpa suscipit atque minima recusandae sed hic mollitia non voluptas eos! Possimus, iure distinctio quia ea suscipit magni deserunt nesciunt placeat libero cumque maiores laudantium provident dignissimos sit eos aliquid laboriosam fugiat eligendi quasi mollitia aperiam non eaque impedit. Totam, saepe suscipit et facere earum culpa nostrum provident voluptatum porro, enim hic quasi repellendus quia quidem officiis quibusdam, ipsum velit eaque corrupti deleniti. Voluptas, eum adipisci numquam blanditiis aliquid ex quod dolore molestiae quo. Velit officia aut quisquam, odio tenetur quis repellendus ipsam repudiandae beatae, labore molestias voluptatibus perferendis sint impedit quos nulla quasi omnis sed, maiores unde.</p>
-        </section>
-    )
+        <div className="bg-gradient-to-br from-green-100 via-yellow-100 to-orange-100 p-6 rounded-lg text-gray-800 max-h-[80vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Licensing Information</h2>
+            <p className="mb-4">
+                This Licensing Information section explains the terms and conditions under which our products and services are licensed to you. Please read this information carefully.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">License Agreement</h3>
+            <p className="mb-4">
+                By using our products or services, you agree to be bound by the terms of our License Agreement. This Agreement governs your use of our software, applications, and any related services.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">Usage Rights</h3>
+            <p className="mb-4">
+                You are granted a non-exclusive, non-transferable license to use our products and services subject to the terms outlined in the License Agreement. This license permits you to use our products for personal or commercial purposes as specified.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">Restrictions</h3>
+            <p className="mb-4">
+                You may not modify, reproduce, distribute, or resell our products or any part thereof without explicit permission. Violation of these restrictions may result in legal action and termination of your license.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-4 text-gray-900">Termination</h3>
+            <p className="mb-4">
+                Your license may be terminated if you fail to comply with the terms of the License Agreement. Upon termination, you must cease all use of our products and services and destroy any copies in your possession.
+            </p>
+        </div>
+    );
 }

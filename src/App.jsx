@@ -32,7 +32,7 @@ export default function App() {
           <Route path='/newsFeed' element={<Explore />} />
           <Route path='/publishNew' element={<Publish />} />
           <Route path='/profile/:userAdd' element={<Profile />} />
-          <Route path='/newsFeed/:feedId' element={<NewsPage />} />
+          <Route path='/newsFeed/:category/:feedId' element={<NewsPage />} />
           <Route path='/finance' element={<Finance />} />
           <Route path='/aboutus' element={<AboutUs />} />
         </Routes>

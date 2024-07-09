@@ -179,8 +179,8 @@ export default function Explore() {
     }
 
     // Implement the payment for the article here
-    const handlePayForArticle = (contentId) => {
-        navigate(`/newsFeed/${contentId}`);
+    const handlePayForArticle = (contentId, category) => {
+        navigate(`/newsFeed/${category}/${contentId}`);
     }
 
     const openModal = (e) => {
@@ -750,7 +750,7 @@ export default function Explore() {
                                             <p className='text-gray-400 absolute bottom-[4rem] left-6'>AI Rating: {item.aiRating}</p>
                                             <button
                                                 className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300 absolute bottom-6"
-                                                onClick={() => handlePayForArticle(item.contentId)}
+                                                onClick={() => handlePayForArticle(item.contentId, item.category)}
                                             >
                                                 View More
                                             </button>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function NewsPage() {
-    const feedId = useParams();
+    const { category, feedId } = useParams();
     const [feed, setFeed] = useState({
         contentId: 4,
         title: 'Stock Market Crash',

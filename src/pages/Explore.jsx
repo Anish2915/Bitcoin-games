@@ -95,8 +95,8 @@ export default function Explore() {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [position, setPosition] = useState(null);
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
     const [newsFeed, setNewsFeed] = useState([
         {
             contentId: 1,
@@ -162,9 +162,9 @@ export default function Explore() {
     const [searchedNewsFeed, setSearchedNewsFeed] = useState([]); // State for the searched news feed
     const [selectedFilters, setSelectedFilters] = useState({
         category: ['stocks', 'general'],
-        locRadius: ['250'],
-        wordLimit: ['1000', '100'],
-        priceRange: ['0.1', '10']
+        locRadius: [],
+        wordLimit: [],
+        priceRange: []
     });
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -389,8 +389,6 @@ export default function Explore() {
                     const words = item.article.split(' ');
                     return words.length >= minWords && words.length <= maxWords;
                 })
-            } else {
-                filtered = [];
             }
 
             // // Apply price range filter
@@ -420,14 +418,12 @@ export default function Explore() {
                         break;
                 }
                 filtered = filtered.filter((item) => (item.price / 1e18) >= minPrice && (item.price / 1e18) <= maxPrice);
-            } else {
-                filtered = [];
             }
 
             // Apply date filter
             if (startDate && endDate) {
                 filtered = filtered.filter((item) => {
-                    return (item.category !== 'stocks') || (item.startDate >= startDate && item.endDate <= endDate);
+                    return (item.category !== 'stocks') || (item.publishedDate >= startDate && item.publishedDate <= endDate);
                 });
             }
 

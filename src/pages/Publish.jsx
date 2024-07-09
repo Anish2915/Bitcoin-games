@@ -49,7 +49,7 @@ export default function Publish() {
         'BgImg': '',
         'Article': '',
         'VisibleLimit': 20,
-        'Price': 1e18,
+        'Price': 1000000000000000000,
     });
     const [uploadedFile, setUploadedFile] = useState(null);
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -129,6 +129,7 @@ export default function Publish() {
         const contract = await getContract();
         if (contract) {
             try {
+                //const price = ethers.BigNumber.from(articleDetails.Price.toString());
                 const tx = await contract.storeStockArticle(
                     articleDetails.Tags,
                     articleDetails.BgImg,
@@ -157,8 +158,10 @@ export default function Publish() {
         const contract = await getContract();
         if (contract) {
             try {
-                const latitude = location ? Math.round(location.latitude * 1e6) : 0;
-                const longitude = location ? Math.round(location.longitude * 1e6) : 0;
+                
+                const latitude = location ? Math.round(location.lat * 1e6) : 0;
+                const longitude = location ? Math.round(location.lng * 1e6) : 0;
+                
                 const tx = await contract.storeGeneralArticle(
                     articleDetails.Tags,
                     articleDetails.BgImg,

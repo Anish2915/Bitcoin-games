@@ -238,40 +238,39 @@ export default function Explore() {
             console.log("start");
             // Fetch stock articles
             const stockArticles = await articleStorage.getAllStockArticles();
-            const formattedStockArticles = stockArticles.map((article, index) => ({
-                contentId: article.index,
-                title: 'title', // Example title extraction
+            const formattedStockArticles = stockArticles.map(article => ({
+                contentId: article.index.toNumber(), // Convert BigNumber to number
+                title: 'title', // Replace with actual title extraction logic
                 category: 'stocks',
                 tags: article.tags,
-                visibleWords: article.visibleWords,
-                price: article.price,
-                publishedDate: new Date(article.dateUploaded * 1000),
+                visibleWords: article.visibleWords.toNumber(), // Convert BigNumber to number
+                price: ethers.utils.formatUnits(article.price, 'wei'), // Convert BigNumber to string in ether
+                publishedDate: new Date(article.dateUploaded.toNumber() * 1000), // Convert BigNumber to number and then to Date
                 article: article.content,
-                startDate: new Date(article.startDate * 1000),
-                endDate: new Date(article.endDate * 1000),
-                userRating: article.userRating,
-                aiRating: article.aiRating,
+                startDate: new Date(article.startDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
+                endDate: new Date(article.endDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
+                userRating: article.userRating.toNumber(), // Convert BigNumber to number
+                aiRating: article.aiRating.toNumber(), // Convert BigNumber to number
                 bgImg: article.image
             }));
 
-            console.log(formattedStockArticles);
             // Fetch general articles
             const generalArticles = await articleStorage.getAllGeneralArticles();
-            const formattedGeneralArticles = generalArticles.map((article, index) => ({
-                contentId: index,
+            const formattedGeneralArticles = generalArticles.map((article) => ({
+                contentId: article.index.toNumber(),
                 title: 'title', // Example title extraction
                 category: 'general',
                 tags: article.tags,
-                visibleWords: article.visibleWords,
-                price: article.price,
-                publishedDate: new Date(article.dateUploaded * 1000),
+                visibleWords: article.visibleWords.toNumber(),
+                price: ethers.utils.formatUnits(article.price, 'wei'),
+                publishedDate: new Date(article.dateUploaded.toNumber() * 1000),
                 article: article.content,
                 location: {
-                    lat: article.latitude,
-                    long: article.longitude
+                    lat: article.latitude.div(1e6).toNumber(),
+                    long: article.longitude.div(1e6).toNumber()
                 },
-                userRating: article.userRating,
-                aiRating: article.aiRating,
+                userRating: article.userRating.toNumber(),
+                aiRating: article.aiRating.toNumber(),
                 bgImg: article.image
             }));
 

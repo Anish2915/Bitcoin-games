@@ -29,10 +29,10 @@ export default function App() {
         />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path='/newsFeed' element={<Explore />} />
+          <Route path='/newsFeed' element={<Explore account={account} setAccount={setAccount} />} />
           <Route path='/publishNew' element={<Publish />} />
-          <Route path='/profile/:userAdd' element={<Profile />} />
-          <Route path='/newsFeed/:category/:feedId' element={<NewsPage />} />
+          <Route path='/profile/:userAdd' element={<Profile account={account} />} />
+          <Route path='/newsFeed/:category/:feedId' element={<NewsPage account={account} setAccount={account} />} />
           <Route path='/finance' element={<Finance />} />
           <Route path='/aboutus' element={<AboutUs />} />
         </Routes>

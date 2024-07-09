@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-export default function NewsPage() {
+export default function NewsPage({ account, setAccount }) {
     const { category, feedId } = useParams();
     const [feed, setFeed] = useState({
         contentId: 4,

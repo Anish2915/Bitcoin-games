@@ -90,7 +90,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function Explore() {
+export default function Explore({ account, setAccount }) {
     const navigate = useNavigate();
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -172,8 +172,8 @@ export default function Explore() {
         setSearchQuery(e.target.value);
         setSearchedNewsFeed(
             filteredNewsFeed.filter((item) => {
-                return item.title.toLowerCase().includes(e.target.value.toLowerCase()) || 
-                item.tags.some((tag) => tag.toLowerCase().includes(e.target.value.toLowerCase()));
+                return item.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                    item.tags.some((tag) => tag.toLowerCase().includes(e.target.value.toLowerCase()));
             })
         );
     }
@@ -233,7 +233,7 @@ export default function Explore() {
         const fetchArticles = async () => {
             // Initialize Web3
             const provider = new ethers.providers.Web3Provider(window.ethereum);
-            
+
             const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
             console.log("start");
             // Fetch stock articles
@@ -486,13 +486,13 @@ export default function Explore() {
                                     <DatePickerComponent
                                         selectedDate={startDate}
                                         setSelectedDate={setStartDate}
-                                        instruction='Start date of prediction'
+                                        instruction='Publication Start Date'
                                     />
 
                                     <DatePickerComponent
                                         selectedDate={endDate}
                                         setSelectedDate={setEndDate}
-                                        instruction='End date of prediction'
+                                        instruction='Publication End Date'
                                     />
                                 </div>}
 
@@ -678,13 +678,13 @@ export default function Explore() {
                                     <DatePickerComponent
                                         selectedDate={startDate}
                                         setSelectedDate={setStartDate}
-                                        instruction='Start date of prediction'
+                                        instruction='Publication Start Date'
                                     />
 
                                     <DatePickerComponent
                                         selectedDate={endDate}
                                         setSelectedDate={setEndDate}
-                                        instruction='End date of prediction'
+                                        instruction='Publication End Date'
                                     />
                                 </div>}
 
@@ -736,19 +736,29 @@ export default function Explore() {
                             {/* Product grid */}
                             <div className="lg:col-span-3 text-black dark:text-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto h-screen p-4">
                                 {searchedNewsFeed.map((item) => (
-                                    <div className="w-full relative max-w-xs h-[20em]" key={item.contentId}>
+                                    <div className="w-full relative max-w-xs h-[28em]" key={item.contentId}>
                                         <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-teal-500 transform scale-[0.80] bg-red-500 rounded-full blur-3xl" />
-                                        <div className="relative shadow-xl bg-gray-900 border border-gray-800 px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col items-start">
+                                        <div className="relative shadow-xl bg-gray-900 border border-gray-800 px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col">
                                             <h1 className="font-bold text-xl text-white mb-4 relative">
                                                 {item.title}
                                             </h1>
                                             <p className="font-normal text-base text-slate-500 mb-4 relative break-words whitespace-normal">
                                                 {`${item.article.split(' ').slice(0, (item.visibleWords < 25 ? item.visibleWords : 25)).join(' ')}...`}
                                             </p>
-                                            <p className='text-gray-400 absolute bottom-[5.3rem] left-6'>User Rating: {item.userRating}</p>
-                                            <p className='text-gray-400 absolute bottom-[4rem] left-6'>AI Rating: {item.aiRating}</p>
+                                            <div className="text-gray-400 mb-4">
+                                                <p>User Rating: {item.userRating}</p>
+                                                <p>AI Rating: {item.aiRating}</p>
+                                                {item.category === 'stocks' ? (
+                                                    <>
+                                                        <p>Prediction Start: {item.startDate.toString()}</p>
+                                                        <p>Prediction End: {item.endDate.toString()}</p>
+                                                    </>
+                                                ) : (
+                                                    <p>Location: {item.location.lat}, {item.location.long}</p>
+                                                )}
+                                            </div>
                                             <button
-                                                className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300 absolute bottom-6"
+                                                className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300 mt-auto self-end"
                                                 onClick={() => handlePayForArticle(item.contentId, item.category)}
                                             >
                                                 View More
@@ -759,6 +769,7 @@ export default function Explore() {
                                     </div>
                                 ))}
                             </div>
+
                         </div>
                     </section>
                 </main>

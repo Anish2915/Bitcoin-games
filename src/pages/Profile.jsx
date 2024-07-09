@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 
@@ -21,10 +21,12 @@ export default function Profile({ account }) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [formData, setFormData] = useState({ ...user });
     const { userAdd } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUser = async () => {
             // Fetch user data from an API
+            navigate(`/profile/${userAdd}`)
         };
 
         const fetchNews = async () => {

@@ -179,7 +179,17 @@ export default function Explore({ account, setAccount }) {
     }
 
     // Implement the payment for the article here
-    const handlePayForArticle = (contentId, category) => {
+    const handlePayForArticle = async (contentId, category) => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
+        let result;
+        if(category === "general"){
+            result = await articleStorage.getStockOpt(address);
+        }
+        else{
+            result = await articleStorage.getGeneralOpt(address);
+        }
+        console.log(result);
         navigate(`/newsFeed/${category}/${contentId}`);
     }
 

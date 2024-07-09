@@ -12,7 +12,9 @@ import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
 const contractABI = ArticleStorage.abi;
-const contractAddress = '0x81e6525bf7ef5df234dd71ce613d58d786e9673a';
+
+
+const contractAddress = '0x838122bdffb698027d1a75b4e147bc0588d1f87b';
 const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 async function getProvider() {
@@ -43,11 +45,11 @@ export default function Publish() {
     const [location, setLocation] = useState(null);
     const [articleDetails, setArticleDetails] = useState({
         'Title': '',
+        'Tags': ['Article', 'Stock'],
+        'BgImg': '',
+        'Article': '',
         'VisibleLimit': 20,
         'Price': 1e18,
-        'Tags': ['Article', 'Stock'],
-        'Article': '',
-        'BgImg': ''
     });
     const [uploadedFile, setUploadedFile] = useState(null);
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -129,6 +131,7 @@ export default function Publish() {
             try {
                 const tx = await contract.storeStockArticle(
                     articleDetails.Tags,
+                    articleDetails.BgImg,
                     articleDetails.Article,
                     articleDetails.VisibleLimit,
                     articleDetails.Price,
@@ -154,15 +157,18 @@ export default function Publish() {
         const contract = await getContract();
         if (contract) {
             try {
+                const latitude = location ? Math.round(location.latitude * 1e6) : 0;
+                const longitude = location ? Math.round(location.longitude * 1e6) : 0;
                 const tx = await contract.storeGeneralArticle(
                     articleDetails.Tags,
+                    articleDetails.BgImg,
                     articleDetails.Article,
                     articleDetails.VisibleLimit,
                     articleDetails.Price,
                     0, // Assuming aiRating
                     0, // Assuming userRating
-                    location ? location.latitude : 0,
-                    location ? location.longitude : 0
+                    latitude,
+                    longitude
                 );
                 await tx.wait();
                 console.log('General article stored successfully');

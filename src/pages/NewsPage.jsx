@@ -19,6 +19,11 @@ export default function NewsPage() {
         bgImg: ''
     });
 
+    const handleRatingChange = (e) => {
+        setFeed({ ...feed, userRating: parseFloat(e.target.value) })
+        // Set the rating here in the backend
+    }
+
     // useEffect(() => {
     //     const fetchFeed = async () => {
     //         // Fetch the particular news feed from here from the backend
@@ -40,6 +45,22 @@ export default function NewsPage() {
                 <div className="w-full text-center">
                     <h1 className="text-3xl font-bold mb-4">{feed.title}</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{feed.publishedDate}</p>
+                    <div className="flex flex-col flex-wrap justify-center items-center gap-2 mb-6">
+                        <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Rate this Article:</h2>
+                        <div className="flex items-center w-[20em]">
+                            <input
+                                type="range"
+                                min="0"
+                                max="10"
+                                step="0.1"
+                                value={feed.userRating}
+                                onChange={handleRatingChange}
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            <span className="ml-2 text-gray-900 dark:text-gray-100">{feed.userRating}</span>
+                        </div>
+                    </div>
+
                     {feed.category === 'stocks' ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>

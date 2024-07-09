@@ -44,7 +44,7 @@ export default function NewsPage() {
                 </div>
                 <div className="w-full text-center">
                     <h1 className="text-3xl font-bold mb-4">{feed.title}</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{feed.publishedDate}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{feed.publishedDate.toString()}</p>
                     <div className="flex flex-col flex-wrap justify-center items-center gap-2 mb-6">
                         <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Rate this Article:</h2>
                         <div className="flex items-center w-[20em]">
@@ -65,11 +65,11 @@ export default function NewsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <p className="font-semibold">Start Date of Prediction:</p>
-                                <p>{feed.startDate}</p>
+                                <p>{feed.startDate.toString()}</p>
                             </div>
                             <div>
                                 <p className="font-semibold">End Date of Prediction:</p>
-                                <p>{feed.endDate}</p>
+                                <p>{feed.endDate.toString()}</p>
                             </div>
                         </div>
                     ) : (

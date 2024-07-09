@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 
 Modal.setAppElement('#root'); // Set your root element for accessibility
 
-export default function Profile() {
+export default function Profile({ account }) {
     const [user, setUser] = useState({
         userAdd: '0X0868hf98gh57gyguki789',
         backImg: '',

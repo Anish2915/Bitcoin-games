@@ -19,9 +19,18 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon } from '@heroicons/rea
 import ModalPopup from '../components/ModalPopup';
 import LocationPicker from '../components/LocationPicker';
 import DatePickerComponent from '../components/DatePickerComponent';
-
-// Impoting ui components
 import Meteors from '../components/ui/Meteors';
+
+import ArticleStorage from '../contracts/ArticleStorage.json'
+const { ethers } = require("ethers");
+
+const contractAddress = '0x838122bdffb698027d1a75b4e147bc0588d1f87b';
+const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
+
+const contractABI = ArticleStorage.abi;
+// Impoting ui components
+
+
 
 const sortOptions = [
     { name: 'Most Popular', id: 'mostPop', current: false },
@@ -220,12 +229,62 @@ export default function Explore() {
         });
     }
 
-    // To fetch the news from the backend when the page is rendered first
-    // useEffect(() => {
-    //     // Fetch the news feed from the blockend and keep it inside the variable fetchedNewsFeed
-    //     const fetchedNewsFeed = [];
-    //     setNewsFeed(fetchedNewsFeed);
-    // }, []);
+    useEffect(() => {
+        const fetchArticles = async () => {
+            // Initialize Web3
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            
+            const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
+            console.log("start");
+            // Fetch stock articles
+            const stockArticles = await articleStorage.getAllStockArticles();
+            const formattedStockArticles = stockArticles.map((article, index) => ({
+                contentId: article.index,
+                title: 'title', // Example title extraction
+                category: 'stocks',
+                tags: article.tags,
+                visibleWords: article.visibleWords,
+                price: article.price,
+                publishedDate: new Date(article.dateUploaded * 1000),
+                article: article.content,
+                startDate: new Date(article.startDate * 1000),
+                endDate: new Date(article.endDate * 1000),
+                userRating: article.userRating,
+                aiRating: article.aiRating,
+                bgImg: article.image
+            }));
+
+            console.log(formattedStockArticles);
+            // Fetch general articles
+            const generalArticles = await articleStorage.getAllGeneralArticles();
+            const formattedGeneralArticles = generalArticles.map((article, index) => ({
+                contentId: index,
+                title: 'title', // Example title extraction
+                category: 'general',
+                tags: article.tags,
+                visibleWords: article.visibleWords,
+                price: article.price,
+                publishedDate: new Date(article.dateUploaded * 1000),
+                article: article.content,
+                location: {
+                    lat: article.latitude,
+                    long: article.longitude
+                },
+                userRating: article.userRating,
+                aiRating: article.aiRating,
+                bgImg: article.image
+            }));
+
+            // Combine both articles
+            const fetchedNewsFeed = [...formattedStockArticles, ...formattedGeneralArticles];
+
+            console.log(fetchedNewsFeed);
+            // Set articles in state
+            setNewsFeed(fetchedNewsFeed);
+        };
+
+        fetchArticles();
+    }, []);
 
     // Handle filter change
     const handleFilterChange = (filterCategory, value) => {

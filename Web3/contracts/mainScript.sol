@@ -3,29 +3,31 @@ pragma solidity ^0.8.0;
 
 contract ArticleStorage {
     struct StockArticle {
+        uint index;
         address owner;
         string[] tags;
+        string image;
         string content;
         uint256 visibleWords;
         uint256 price;
         uint256 dateUploaded;
         uint256 aiRating;
         uint256 userRating;
-        address[] usersAllowed;
         uint256 startDate;
         uint256 endDate;
     }
 
     struct GeneralArticle {
+        uint index;
         address owner;
         string[] tags;
+        string image;
         string content;
         uint256 visibleWords;
         uint256 price;
         uint256 dateUploaded;
         uint256 aiRating;
         uint256 userRating;
-        address[] usersAllowed;
         int256 latitude;
         int256 longitude;
     }
@@ -33,8 +35,12 @@ contract ArticleStorage {
     StockArticle[] public stocks;
     GeneralArticle[] public general;
 
+    mapping (address => int[]) public stockopt;
+    mapping (address => int[]) public Generalopt;
+
     function storeStockArticle(
         string[] memory _tags, 
+        string memory _image ,
         string memory _content, 
         uint256 _visibleWords, 
         uint256 _price, 
@@ -43,18 +49,18 @@ contract ArticleStorage {
         uint256 _startDate,
         uint256 _endDate
     ) public {
-        address[] memory emptyArray;
 
         StockArticle memory newStockArticle = StockArticle({
+            index: stocks.length,
             owner: msg.sender,
             tags: _tags,
+            image: _image,
             content: _content,
             visibleWords: _visibleWords,
             price: _price,
             dateUploaded: block.timestamp,
             aiRating: _aiRating,
             userRating: _userRating,
-            usersAllowed: emptyArray,
             startDate: _startDate,
             endDate: _endDate
         });
@@ -63,7 +69,8 @@ contract ArticleStorage {
     }
 
     function storeGeneralArticle(
-        string[] memory _tags, 
+        string[] memory _tags,
+        string memory _image, 
         string memory _content, 
         uint256 _visibleWords, 
         uint256 _price, 
@@ -72,17 +79,17 @@ contract ArticleStorage {
         int256 _latitude,
         int256 _longitude
     ) public {
-        address[] memory emptyArray;
         GeneralArticle memory newGeneralArticle = GeneralArticle({
+            index: general.length,
             owner: msg.sender,
             tags: _tags,
+            image: _image,
             content: _content,
             visibleWords: _visibleWords,
             price: _price,
             dateUploaded: block.timestamp,
             aiRating: _aiRating,
             userRating: _userRating,
-            usersAllowed: emptyArray,
             latitude: _latitude,
             longitude: _longitude
         });
@@ -91,60 +98,64 @@ contract ArticleStorage {
     }
 
     function getStockArticle(uint256 index) public view returns (
+        uint,
         address, 
         string[] memory, 
+        string memory,
         string memory, 
         uint256, 
         uint256, 
         uint256, 
         uint256, 
         uint256, 
-        address[] memory,
         uint256,
         uint256
     ) {
         require(index < stocks.length, "Index out of bounds for stocks");
         StockArticle memory article = stocks[index];
         return (
+            article.index,
             article.owner, 
             article.tags, 
+            article.image,
             article.content, 
             article.visibleWords, 
             article.price, 
             article.dateUploaded, 
             article.aiRating, 
             article.userRating,
-            article.usersAllowed,
             article.startDate,
             article.endDate
         );
     }
 
     function getGeneralArticle(uint256 index) public view returns (
+        uint,
         address, 
         string[] memory, 
+        string memory,
         string memory, 
         uint256, 
         uint256, 
         uint256, 
         uint256, 
         uint256,
-        address[] memory,
         int256,
         int256
     ) {
         require(index < general.length, "Index out of bounds for general");
         GeneralArticle memory article = general[index];
         return (
+            article.index,
             article.owner, 
             article.tags, 
+            article.image,
             article.content, 
             article.visibleWords, 
             article.price, 
             article.dateUploaded, 
             article.aiRating, 
             article.userRating,
-            article.usersAllowed,
             article.latitude,
             article.longitude
         );
@@ -156,10 +167,13 @@ contract ArticleStorage {
 
         require(msg.value >= article.price, "Insufficient payment");
 
-        payable(article.owner).transfer(msg.value);
+        // Using call to transfer Ether
+        address payable owner = payable(article.owner);
+        owner.transfer(article.price);
 
-        article.usersAllowed.push(msg.sender);
+        stockopt[msg.sender].push(int(index));
     }
+
 
     function payForGeneralArticle(uint256 index) public payable {
         require(index < general.length, "Index out of bounds for general");
@@ -167,8 +181,25 @@ contract ArticleStorage {
 
         require(msg.value >= article.price, "Insufficient payment");
 
-        payable(article.owner).transfer(msg.value);
+        address payable owner = payable(article.owner);
+        owner.transfer(article.price);
 
-        article.usersAllowed.push(msg.sender);
+        Generalopt[msg.sender].push(int(index));
+    }
+
+    function getStockOpt(address user) public view returns (int[] memory) {
+        return stockopt[user];
+    }
+
+    function getGeneralOpt(address user) public view returns (int[] memory) {
+        return Generalopt[user];
+    }
+
+    function getAllStockArticles() public view returns (StockArticle[] memory) {
+        return stocks;
+    }
+
+    function getAllGeneralArticles() public view returns (GeneralArticle[] memory) {
+        return general;
     }
 }

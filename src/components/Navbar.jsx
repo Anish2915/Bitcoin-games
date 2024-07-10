@@ -15,6 +15,7 @@ const navigation = [
   { name: 'Finance', href: '/finance' },
 ]
 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -24,48 +25,86 @@ export default function Navbar({ account, setAccount }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const handleAccountsChanged = async (accounts) => {
-  //     if (accounts.length === 0) {
-  //       console.log('Please connect to MetaMask!');
-  //       setAccount('0x0')
-  //     } else if (accounts[0] !== account) {
-  //       setAccount(account[0]);
-  //     }
-  //   }
+  const chainData = {
+    chainName: 'Rootstock Testnet',
+    chainId: '0x1f',
+    rpcUrls: ['https://public-node.testnet.rsk.co'],
+    blockExplorerUrls: ['https://explorer.testnet.rsk.co/'],
+    nativeCurrency: {
+      symbol: 'tRBTC',
+      decimals: 18,
+    }
+  };
 
-  //   const handleChainChanged = () => {
-  //     window.location.reload();
-  //   }
+  const switchNetwork = async (provider) => {
+    try {
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: chainData.chainId }]
+      });
+    } catch (switchError) {
+      if (switchError.code === 4902) {
+        try {
+          await provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [chainData]
+          });
+        } catch (addError) {
+          console.error('Failed to add the network', addError);
+        }
+      } else {
+        console.error('Failed to switch network', switchError);
+      }
+    }
+  };
 
-  //   const connectWallet = async () => {
-  //     const provider = await detectEthereumProvider();
-  //     if (provider) {
-  //       const accounts = await provider.request({ method: 'eth_requestAccounts' });
-  //       setAccount(accounts[0]);
+  const handleAccountsChanged = async (accounts) => {
+    if (accounts.length === 0) {
+      console.log('Please connect to MetaMask!');
+      setAccount('0x0');
+    } else if (accounts[0] !== account) {
+      setAccount(account[0]);
+      
+    }
+  }
 
-  //       window.ethereum.on('accountsChanged', handleAccountsChanged);
-  //       window.ethereum.on('chainChanged', handleChainChanged);
-  //     } else {
-  //       console.log('Please install MetaMask!');
-  //     }
-  //   }
+  const handleChainChanged = () => {
+    window.location.reload();
+  }
 
-  //   connectWallet();
+  useEffect(() => {
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      }
+    }
+  }, [account, setAccount]);
 
-  //   return () => {
-  //     if (window.ethereum) {
-  //       window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-  //       window.ethereum.removeListener('chainChanged', handleChainChanged);
-  //     }
-  //   }
-  // }, [account, setAccount]);
+  useEffect(() => {
+    const connectWallet = async () => {
+      const provider = await detectEthereumProvider();
+      if (provider) {
+        const accounts = await provider.request({ method: 'eth_requestAccounts' });
+        setAccount(accounts[0]);
+        switchNetwork(provider);
+        window.ethereum.on('accountsChanged', handleAccountsChanged);
+        window.ethereum.on('chainChanged', handleChainChanged);
+      } else {
+        console.log('Please install MetaMask!');
+      }
+    }
+
+    connectWallet();
+  }, []);
+
 
   const handleWalletConnection = async () => {
     const provider = await detectEthereumProvider();
     if (provider) {
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
       setAccount(accounts[0]);
+      switchNetwork(provider);
     } else {
       console.log('Please install MetaMask!')
     }
@@ -76,7 +115,7 @@ export default function Navbar({ account, setAccount }) {
     setAccount('0x0');
     navigate('/');
   }
-  
+
   useEffect(() => {
     console.log("The account currently is: ", account);
   }, [account]);

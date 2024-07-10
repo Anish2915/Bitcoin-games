@@ -25,7 +25,7 @@ import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
 const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
-const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
+//const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 const contractABI = ArticleStorage.abi;
 // Impoting ui components
@@ -735,8 +735,8 @@ export default function Explore({ account, setAccount }) {
                                                 <p>AI Rating: {item.aiRating}</p>
                                                 {item.category === 'stocks' ? (
                                                     <>
-                                                        <p>Prediction Start: {item.startDate.toString()}</p>
-                                                        <p>Prediction End: {item.endDate.toString()}</p>
+                                                        <p>Prediction Start: {item.startDate.toString().slice(0,3)}</p>
+                                                        <p>Prediction End: {item.endDate.toString().slice(0,3)}</p>
                                                     </>
                                                 ) : (
                                                     <p>Location: {item.location.lat}, {item.location.long}</p>

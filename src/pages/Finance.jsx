@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 
 // Importing IPFS for storage and related things
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 // import Web3Modal from 'web3modal';
 import { create as ipfsHttpClient } from 'ipfs-http-client';
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')

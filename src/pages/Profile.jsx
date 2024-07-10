@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+//import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import ArticleStorage from '../contracts/ArticleStorage.json'
@@ -12,26 +12,38 @@ Modal.setAppElement('#root'); // Set your root element for accessibility
 
 export default function Profile({ account }) {
     const [user, setUser] = useState({
-        userAdd: account,
-        backImg: '',
-        profileIcon: '',
-        aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
-        btcSpent: 0.02,
-        btcGained: 0.05,
-        totalTransaction: 36,
-        userTag: 'Web Developer'
+        // userAdd: account,
+        // backImg: '',
+        // profileIcon: '',
+        // aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
+        // btcSpent: 0.02,
+        // btcGained: 0.05,
+        // totalTransaction: 36,
+        // userTag: 'Web Developer'
     });
     const [boughtNews, setBoughtNews] = useState([]);
     const [publishedNews, setPublishedNews] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [formData, setFormData] = useState({ ...user });
-    const { userAdd } = useParams();
-    const navigate = useNavigate();
+    //const { userAdd } = useParams();
+    //const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchUser = async () => {
             // Fetch user data from an API
-            navigate(`/profile/${account}`)
+
+            setUser({
+                userAdd: account,
+                backImg: '',
+                profileIcon: '',
+                aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
+                btcSpent: 0.02,
+                btcGained: 0.05,
+                totalTransaction: 36,
+                userTag: 'Web Developer'
+            })
+            //navigate(`/profile/${account}`)
         };
 
         const fetchNews = async () => {

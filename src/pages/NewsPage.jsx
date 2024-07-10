@@ -35,7 +35,7 @@ export default function NewsPage({ account, setAccount }) {
     useEffect(() => {
         const fetchFeed = async () => {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
+            //const signer = provider.getSigner();
             const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
             let result;
             if (category === "general") {
@@ -77,7 +77,7 @@ export default function NewsPage({ account, setAccount }) {
             else {
                 try {
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
+                    //const signer = provider.getSigner();
                     const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
                     console.log(feedId);
 
@@ -93,7 +93,7 @@ export default function NewsPage({ account, setAccount }) {
                     }
 
                     // Assuming the article data returned from the contract matches the state structure
-                    if (category == 'general') {
+                    if (category === 'general') {
                         const fetchedFeed = {
                             contentId: article[0].toNumber(),
                             title: 'title', // Example title extraction

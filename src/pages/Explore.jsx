@@ -24,7 +24,7 @@ import Meteors from '../components/ui/Meteors';
 import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
-const contractAddress = '0x838122bdffb698027d1a75b4e147bc0588d1f87b';
+const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
 const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 const contractABI = ArticleStorage.abi;
@@ -98,65 +98,7 @@ export default function Explore({ account, setAccount }) {
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [newsFeed, setNewsFeed] = useState([
-        {
-            contentId: 1,
-            title: 'Ethereum Price',
-            category: 'stocks',
-            tags: ['stocks', 'price', 'ethereum'],
-            visibleWords: 20,
-            price: 1e18,
-            publishedDate: new Date(),
-            article: 'Ethereum price is currently at $2000. It is expected to rise to $2500 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-            startDate: new Date(),
-            endDate: new Date(),
-            userRating: 8,
-            aiRating: 6.2,
-            bgImg: ''
-        }, {
-            contentId: 2,
-            title: 'Bitcoin Price',
-            category: 'stocks',
-            tags: ['stocks', 'price', 'bitcoin'],
-            visibleWords: 16,
-            price: 1e17,
-            publishedDate: new Date(),
-            article: 'Bitcoin price is currently at $50000. It is expected to rise to $60000 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-            startDate: new Date(),
-            endDate: new Date(),
-            userRating: 5,
-            aiRating: 6,
-            bgImg: ''
-        }, {
-            contentId: 3,
-            title: 'Clashes in Manipur',
-            category: 'general',
-            tags: ['general', 'politics', 'india', 'manipur', 'clashes', 'news'],
-            visibleWords: 25,
-            price: 1e16,
-            publishedDate: new Date(),
-            article: 'Clashes in Manipur are there from past three months. Up to now nearly 200+ people died. Till long time there was no action from the side of the central government. The whole Manipur is burning in fires. Some opposition leaders went but still now resolution can be seen. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-            location: {
-                lat: 24.817011,
-                long: 93.936844
-            },
-            userRating: 3,
-            aiRating: 9,
-            bgImg: ''
-        }, {
-            contentId: 4,
-            title: 'Stock Market Crash',
-            category: 'stocks',
-            tags: ['stocks', 'price', 'stock market', 'crash', 'news'],
-            visibleWords: 15,
-            price: 1e17,
-            publishedDate: new Date(),
-            article: 'Stock market crashed today. The SENSEX fell by 1000 points. The NIFTY fell by 300 points. The stock market is expected to recover in the next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-            startDate: new Date(),
-            endDate: new Date(),
-            userRating: 9.4,
-            aiRating: 7.1,
-            bgImg: ''
-        }
+        
     ]); // Initialize state for news feed
     const [filteredNewsFeed, setFilteredNewsFeed] = useState([]); // State for filtered news feed
     const [searchedNewsFeed, setSearchedNewsFeed] = useState([]); // State for the searched news feed
@@ -181,16 +123,49 @@ export default function Explore({ account, setAccount }) {
     // Implement the payment for the article here
     const handlePayForArticle = async (contentId, category) => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
         const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
         let result;
-        if(category === "general"){
-            result = await articleStorage.getStockOpt(address);
+        if (category === "general") {
+            result = await articleStorage.getGeneralOpt(account);
+        } else {
+            result = await articleStorage.getStockOpt(account);
         }
-        else{
-            result = await articleStorage.getGeneralOpt(address);
+
+        const isPurchased = result.some(content => content.toNumber() === contentId);
+
+        if (isPurchased) {
+            navigate(`/newsFeed/${category}/${contentId}`);
+            return;
+        } else {
+            // Retrieve the article details to get the price
+            const articleStorage2 = new ethers.Contract(contractAddress, contractABI, signer);
+            let article;
+            if (category === "general") {
+                article = await articleStorage.getGeneralArticle(contentId);
+            } else {
+                article = await articleStorage.getStockArticle(contentId);
+            }
+            const price = ethers.BigNumber.from(article[6]);
+
+            // Pay for the article
+            try {
+                let tx;
+                if (category === "general") {
+                    tx = await articleStorage2.payForGeneralArticle(contentId, { value: price });
+                } else {
+                    tx = await articleStorage2.payForStockArticle(contentId, { value: price });
+                }
+                console.log('Transaction sent:', tx);
+                const receipt = await tx.wait();
+                console.log('Transaction mined:', receipt);
+                navigate(`/newsFeed/${category}/${contentId}`);
+            }
+            catch (error) {
+                console.error("Payment failed:", error);
+                // Optionally, handle payment failure (e.g., show a notification)
+            }
         }
-        console.log(result);
-        navigate(`/newsFeed/${category}/${contentId}`);
     }
 
     const openModal = (e) => {

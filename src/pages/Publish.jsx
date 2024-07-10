@@ -14,7 +14,7 @@ const { ethers } = require("ethers");
 const contractABI = ArticleStorage.abi;
 
 
-const contractAddress = '0x838122bdffb698027d1a75b4e147bc0588d1f87b';
+const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
 const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 async function getProvider() {

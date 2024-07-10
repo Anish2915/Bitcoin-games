@@ -66,6 +66,7 @@ contract ArticleStorage {
         });
 
         stocks.push(newStockArticle);
+        stockopt[msg.sender].push(int(newStockArticle.index));
     }
 
     function storeGeneralArticle(
@@ -95,6 +96,7 @@ contract ArticleStorage {
         });
         
         general.push(newGeneralArticle);
+        Generalopt[msg.sender].push(int(newGeneralArticle.index));
     }
 
     function getStockArticle(uint256 index) public view returns (
@@ -167,7 +169,6 @@ contract ArticleStorage {
 
         require(msg.value >= article.price, "Insufficient payment");
 
-        // Using call to transfer Ether
         address payable owner = payable(article.owner);
         owner.transfer(article.price);
 

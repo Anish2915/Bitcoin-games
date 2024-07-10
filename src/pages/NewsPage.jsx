@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import ArticleStorage from '../contracts/ArticleStorage.json'
+const { ethers } = require("ethers");
+
+const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
+const contractABI = ArticleStorage.abi;
 
 export default function NewsPage({ account, setAccount }) {
+    const navigate = useNavigate();
     const { category, feedId } = useParams();
     const [feed, setFeed] = useState({
-        contentId: 4,
-        title: 'Stock Market Crash',
-        category: 'stocks',
-        tags: ['stocks', 'price', 'stock market', 'crash', 'news'],
-        visibleWords: 15,
-        price: 1e17,
-        publishedDate: '07-07-2024',
-        article: 'Stock market crashed today. The SENSEX fell by 1000 points. The NIFTY fell by 300 points. The stock market is expected to recover in the next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-        startDate: '09-07-2024',
-        endDate: '15-07-2024',
-        userRating: 9.4,
-        aiRating: 7.1,
+        contentId: null,
+        title: '',
+        category: '',
+        tags: [],
+        visibleWords: 0,
+        price: 0,
+        publishedDate: '',
+        article: '',
+        startDate: '',
+        endDate: '',
+        userRating: 0,
+        aiRating: 0,
         bgImg: ''
     });
 
@@ -24,13 +32,115 @@ export default function NewsPage({ account, setAccount }) {
         // Set the rating here in the backend
     }
 
-    // useEffect(() => {
-    //     const fetchFeed = async () => {
-    //         // Fetch the particular news feed from here from the backend
-    //     }
+    useEffect(() => {
+        const fetchFeed = async () => {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
+            let result;
+            if (category === "general") {
+                result = await articleStorage.getGeneralOpt(account);
+            } else {
+                result = await articleStorage.getStockOpt(account);
+            }
 
-    //     fetchFeed();
-    // }, [])
+            const isPurchased = result.some(content => content.toNumber() === feedId);
+            if (!isPurchased) {
+                navigate(`/newsFeed`);
+                // const articleStorage2 = new ethers.Contract(contractAddress, contractABI, signer);
+                // let article;
+                // if (category === "general") {
+                //     article = await articleStorage.getGeneralArticle(feedId);
+                // } else {
+                //     article = await articleStorage.getStockArticle(feedId);
+                // }
+                // const price = ethers.BigNumber.from(article[6]);
+
+                // // Pay for the article
+                // try {
+                //     let tx;
+                //     if (category === "general") {
+                //         tx = await articleStorage2.payForGeneralArticle(feedId, { value: price });
+                //     } else {
+                //         tx = await articleStorage2.payForStockArticle(feedId, { value: price });
+                //     }
+                //     console.log('Transaction sent:', tx);
+                //     const receipt = await tx.wait();
+                //     console.log('Transaction mined:', receipt);
+                //     //navigate(`/newsFeed/${category}/${feedId}`);
+                // }
+                // catch (error) {
+                //     console.error("Payment failed:", error);
+                //     // Optionally, handle payment failure (e.g., show a notification)
+                // }
+            }
+            else {
+                try {
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
+                    console.log(feedId);
+
+                    let article;
+                    if (category === 'general') {
+                        console.log(category, 'this general');
+                        article = await articleStorage.getGeneralArticle(feedId);
+                        console.log(article);
+                    } else {
+                        console.log(category, 'this stock');
+                        article = await articleStorage.getStockArticle(feedId);
+                        console.log(article);
+                    }
+
+                    // Assuming the article data returned from the contract matches the state structure
+                    if (category == 'general') {
+                        const fetchedFeed = {
+                            contentId: article[0].toNumber(),
+                            title: 'title', // Example title extraction
+                            category: 'general',
+                            tags: article[2],
+                            visibleWords: article[5].toNumber(),
+                            price: ethers.utils.formatUnits(article[6], 'wei'),
+                            publishedDate: new Date(article[7].toNumber() * 1000),
+                            article: article[4],
+                            // location: {
+                            //     lat: article.latitude.div(1e6).toNumber(),
+                            //     long: article.longitude.div(1e6).toNumber()
+                            // },
+                            userRating: article[9].toNumber(),
+                            aiRating: article[8].toNumber(),
+                            bgImg: article[3]
+                        };
+                        console.log(fetchedFeed);
+                        setFeed(fetchedFeed);
+                    }
+                    else {
+                        const fetchedFeed = {
+                            contentId: article[0].toNumber(), // Convert BigNumber to number
+                            title: 'title', // Replace with actual title extraction logic
+                            category: 'stocks',
+                            tags: article[2],
+                            visibleWords: article[5].toNumber(), // Convert BigNumber to number
+                            price: ethers.utils.formatUnits(article[6], 'wei'), // Convert BigNumber to string in ether
+                            publishedDate: new Date(article[7].toNumber() * 1000), // Convert BigNumber to number and then to Date
+                            article: article[4],
+                            startDate: new Date(article[10].toNumber() * 1000), // Convert BigNumber to number and then to Date
+                            endDate: new Date(article[11].toNumber() * 1000), // Convert BigNumber to number and then to Date
+                            userRating: article[9].toNumber(), // Convert BigNumber to number
+                            aiRating: article[8].toNumber(), // Convert BigNumber to number
+                            bgImg: article[3]
+                        };
+                        console.log(fetchedFeed);
+                        setFeed(fetchedFeed);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch article:", error);
+                }
+            }
+        };
+
+        fetchFeed();
+    }, [feedId, category]);
 
     return (
         <main className="text-black bg-white dark:text-white dark:bg-black mt-24 min-h-screen">

@@ -14,7 +14,7 @@ const { ethers } = require("ethers");
 const contractABI = ArticleStorage.abi;
 
 
-const contractAddress = '0x838122bdffb698027d1a75b4e147bc0588d1f87b';
+const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
 const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 async function getProvider() {
@@ -49,7 +49,7 @@ export default function Publish() {
         'BgImg': '',
         'Article': '',
         'VisibleLimit': 20,
-        'Price': 1000000000000000000,
+        'Price': 10000000000000000,
     });
     const [uploadedFile, setUploadedFile] = useState(null);
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -80,7 +80,7 @@ export default function Publish() {
     const handlePriceChange = (e) => {
         setArticleDetails(prevState => ({
             ...prevState,
-            Price: e.target.value,
+            Price: (e.target.value<=1e16 ? e.target.value : 1e16),
         }))
     }
 
@@ -289,7 +289,7 @@ export default function Publish() {
                                             onChange={handlePriceChange}
                                             id="price"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="1000000000000000000 is 1ETH"
+                                            placeholder="Price must be less than 1e16 wei i.e 0.01BTC"
                                             required
                                         />
                                     </div>

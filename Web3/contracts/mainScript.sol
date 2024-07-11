@@ -46,6 +46,7 @@ contract ArticleStorage {
         stocks[index].noOfUserRate += 1; 
     }
 
+    // Function to set userRating for GeneralArticle by index
     function setGeneralUserRating(uint index, uint256 rating) public {
         require(index < general.length, "GeneralArticle index out of range");
         general[index].userRating = (general[index].userRating* general[index].noOfUserRate + rating ) / (general[index].noOfUserRate+1) ;

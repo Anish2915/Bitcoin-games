@@ -27,6 +27,26 @@ export default function NewsPage({ account, setAccount }) {
         bgImg: ''
     });
 
+    const handleRatingSubmit = async () => {
+        const indvar = 1;
+        const ratingVar = 5;
+        const category = "general";
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const articleStorage = new ethers.Contract(contractAddress, contractABI, signer);
+            if (category === "general") {
+                await articleStorage.setGeneralUserRating(indvar, ratingVar);
+            }
+            else {
+                await articleStorage.setStockUserRating(indvar, ratingVar);
+            }
+        }
+        catch (error) {
+            console.error('Error setting user rating:', error);
+        }
+    }
+
     const handleRatingChange = (e) => {
         setFeed({ ...feed, userRating: parseFloat(e.target.value) })
         // Set the rating here in the backend

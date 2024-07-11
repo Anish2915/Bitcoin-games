@@ -15,6 +15,7 @@ contract ArticleStorage {
         uint256 userRating;
         uint256 startDate;
         uint256 endDate;
+        uint256 noOfUserRate;
     }
 
     struct GeneralArticle {
@@ -30,6 +31,7 @@ contract ArticleStorage {
         uint256 userRating;
         int256 latitude;
         int256 longitude;
+        uint256 noOfUserRate;
     }
 
     StockArticle[] public stocks;
@@ -37,6 +39,18 @@ contract ArticleStorage {
 
     mapping (address => int[]) public stockopt;
     mapping (address => int[]) public Generalopt;
+
+    function setStockUserRating(uint index, uint256 rating) public {
+        require(index < stocks.length, "StockArticle index out of range");
+        stocks[index].userRating = (stocks[index].userRating* stocks[index].noOfUserRate + rating ) / (stocks[index].noOfUserRate+1);
+        stocks[index].noOfUserRate += 1; 
+    }
+
+    function setGeneralUserRating(uint index, uint256 rating) public {
+        require(index < general.length, "GeneralArticle index out of range");
+        general[index].userRating = (general[index].userRating* general[index].noOfUserRate + rating ) / (general[index].noOfUserRate+1) ;
+        general[index].noOfUserRate += 1; 
+    }
 
     function storeStockArticle(
         string[] memory _tags, 
@@ -62,7 +76,8 @@ contract ArticleStorage {
             aiRating: _aiRating,
             userRating: _userRating,
             startDate: _startDate,
-            endDate: _endDate
+            endDate: _endDate,
+            noOfUserRate: 0
         });
 
         stocks.push(newStockArticle);
@@ -92,7 +107,8 @@ contract ArticleStorage {
             aiRating: _aiRating,
             userRating: _userRating,
             latitude: _latitude,
-            longitude: _longitude
+            longitude: _longitude,
+            noOfUserRate: 0
         });
         
         general.push(newGeneralArticle);

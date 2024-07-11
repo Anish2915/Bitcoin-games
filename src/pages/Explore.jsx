@@ -24,7 +24,7 @@ import Meteors from '../components/ui/Meteors';
 import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
-const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
+const contractAddress = '0xc4ee449dc12ac2c9316bf52abb868f1ff80e4b28';
 //const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 const contractABI = ArticleStorage.abi;
@@ -98,7 +98,7 @@ export default function Explore({ account, setAccount }) {
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [newsFeed, setNewsFeed] = useState([
-        
+
     ]); // Initialize state for news feed
     const [filteredNewsFeed, setFilteredNewsFeed] = useState([]); // State for filtered news feed
     const [searchedNewsFeed, setSearchedNewsFeed] = useState([]); // State for the searched news feed
@@ -194,7 +194,7 @@ export default function Explore({ account, setAccount }) {
         });
 
         setSearchedNewsFeed((prevNewsFeed) => {
-            let sortedNewsFeed = [...prevNewsFeed];
+            let sortedNewsFeed = [...filteredNewsFeed];
             switch (sortOption.id) {
                 case 'mostPop':
                     sortedNewsFeed.sort((a, b) => b.userRating - a.userRating);
@@ -224,41 +224,47 @@ export default function Explore({ account, setAccount }) {
             console.log("start");
             // Fetch stock articles
             const stockArticles = await articleStorage.getAllStockArticles();
-            const formattedStockArticles = stockArticles.map(article => ({
-                contentId: article.index.toNumber(), // Convert BigNumber to number
-                title: 'title', // Replace with actual title extraction logic
-                category: 'stocks',
-                tags: article.tags,
-                visibleWords: article.visibleWords.toNumber(), // Convert BigNumber to number
-                price: ethers.utils.formatUnits(article.price, 'wei'), // Convert BigNumber to string in ether
-                publishedDate: new Date(article.dateUploaded.toNumber() * 1000), // Convert BigNumber to number and then to Date
-                article: article.content,
-                startDate: new Date(article.startDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
-                endDate: new Date(article.endDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
-                userRating: article.userRating.toNumber(), // Convert BigNumber to number
-                aiRating: article.aiRating.toNumber(), // Convert BigNumber to number
-                bgImg: article.image
-            }));
+            const formattedStockArticles = stockArticles.map(article => {
+                const [titled, contentd] = article.content.split('%');
+                return {
+                    contentId: article.index.toNumber(), // Convert BigNumber to number
+                    title: titled, // Replace with actual title extraction logic
+                    category: 'stocks',
+                    tags: article.tags,
+                    visibleWords: article.visibleWords.toNumber(), // Convert BigNumber to number
+                    price: ethers.utils.formatUnits(article.price, 'wei'), // Convert BigNumber to string in ether
+                    publishedDate: new Date(article.dateUploaded.toNumber() * 1000), // Convert BigNumber to number and then to Date
+                    article: contentd,
+                    startDate: new Date(article.startDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
+                    endDate: new Date(article.endDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
+                    userRating: article.userRating.toNumber(), // Convert BigNumber to number
+                    aiRating: article.aiRating.toNumber(), // Convert BigNumber to number
+                    bgImg: article.image
+                };
+            });
 
             // Fetch general articles
             const generalArticles = await articleStorage.getAllGeneralArticles();
-            const formattedGeneralArticles = generalArticles.map((article) => ({
-                contentId: article.index.toNumber(),
-                title: 'title', // Example title extraction
-                category: 'general',
-                tags: article.tags,
-                visibleWords: article.visibleWords.toNumber(),
-                price: ethers.utils.formatUnits(article.price, 'wei'),
-                publishedDate: new Date(article.dateUploaded.toNumber() * 1000),
-                article: article.content,
-                location: {
-                    lat: article.latitude.div(1e6).toNumber(),
-                    long: article.longitude.div(1e6).toNumber()
-                },
-                userRating: article.userRating.toNumber(),
-                aiRating: article.aiRating.toNumber(),
-                bgImg: article.image
-            }));
+            const formattedGeneralArticles = generalArticles.map((article) => {
+                const [titled, contentd] = article.content.split('%');
+                return {
+                    contentId: article.index.toNumber(),
+                    title: titled, // Example title extraction
+                    category: 'general',
+                    tags: article.tags,
+                    visibleWords: article.visibleWords.toNumber(),
+                    price: ethers.utils.formatUnits(article.price, 'wei'),
+                    publishedDate: new Date(article.dateUploaded.toNumber() * 1000),
+                    article: contentd,
+                    location: {
+                        lat: (article.latitude.toNumber() / 1e6 ).toFixed(6),
+                        long: (article.longitude.toNumber() / 1e6 ).toFixed(6)
+                    },
+                    userRating: article.userRating.toNumber(),
+                    aiRating: article.aiRating.toNumber(),
+                    bgImg: article.image
+                };
+            });
 
             // Combine both articles
             const fetchedNewsFeed = [...formattedStockArticles, ...formattedGeneralArticles];
@@ -736,8 +742,8 @@ export default function Explore({ account, setAccount }) {
                                                 <p>AI Rating: {item.aiRating}</p>
                                                 {item.category === 'stocks' ? (
                                                     <>
-                                                        <p>Prediction Start: {item.startDate.toString().slice(0,3)}</p>
-                                                        <p>Prediction End: {item.endDate.toString().slice(0,3)}</p>
+                                                        <p>Prediction Start: {item.startDate.toString().split(" ").slice(1, 4).join(" ")}</p>
+                                                        <p>Prediction End: {item.endDate.toString().split(" ").slice(1, 4).join(" ")}</p>
                                                     </>
                                                 ) : (
                                                     <p>Location: {item.location.lat}, {item.location.long}</p>

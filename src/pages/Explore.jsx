@@ -184,10 +184,10 @@ export default function Explore({ account, setAccount }) {
         const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
         let result;
         if(category === "general"){
-            result = await articleStorage.getStockOpt(address);
+            result = await articleStorage.getStockOpt(account);
         }
         else{
-            result = await articleStorage.getGeneralOpt(address);
+            result = await articleStorage.getGeneralOpt(account);
         }
         console.log(result);
         navigate(`/newsFeed/${category}/${contentId}`);

@@ -12,14 +12,14 @@ Modal.setAppElement('#root'); // Set your root element for accessibility
 
 export default function Profile({ account }) {
     const [user, setUser] = useState({
-        // userAdd: account,
-        // backImg: '',
-        // profileIcon: '',
-        // aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
-        // btcSpent: 0.02,
-        // btcGained: 0.05,
-        // totalTransaction: 36,
-        // userTag: 'Web Developer'
+        userAdd: account,
+        backImg: '',
+        profileIcon: '',
+        aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
+        btcSpent: "--",
+        btcGained: "--",
+        totalTransaction: "--",
+        userTag: 'Web Developer'
     });
     const [boughtNews, setBoughtNews] = useState([]);
     const [publishedNews, setPublishedNews] = useState([]);
@@ -33,16 +33,41 @@ export default function Profile({ account }) {
         const fetchUser = async () => {
             // Fetch user data from an API
 
-            setUser({
-                userAdd: account,
-                backImg: '',
-                profileIcon: '',
-                aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
-                btcSpent: 0.02,
-                btcGained: 0.05,
-                totalTransaction: 36,
-                userTag: 'Web Developer'
-            })
+            const apiKey = 'Su8ziMqif4Aj0xQe2iCn5CVXWO3JQk-T'; // Replace with your actual API key
+            const url = `https://rpc.testnet.rootstock.io/${apiKey}`;
+
+            const requestBody = {
+                jsonrpc: "2.0",
+                method: "eth_getBalance",
+                params: [account, "latest"],
+                id: 0
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const bal = ethers.utils.formatEther(data.result);
+                    setUser(prevUser => ({
+                        ...prevUser,
+                        btcGained: bal
+                    }));
+                } else {
+                    console.error('Error fetching data', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching data', error);
+            }
+
+            
             //navigate(`/profile/${account}`)
         };
 
@@ -238,7 +263,7 @@ export default function Profile({ account }) {
                 <div className="flex justify-around text-center mt-4">
                     <div>
                         <span className="block text-gray-700 dark:text-gray-300 text-2xl font-bold">{user.btcGained}</span>
-                        <span className="block text-gray-500 dark:text-gray-400">BTC Gained</span>
+                        <span className="block text-gray-500 dark:text-gray-400">Current Amount</span>
                     </div>
                     <div>
                         <span className="block text-gray-700 dark:text-gray-300 text-2xl font-bold">{user.totalTransaction}</span>

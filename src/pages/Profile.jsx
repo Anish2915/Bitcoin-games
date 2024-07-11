@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
-const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
+const contractAddress = '0xc4ee449dc12ac2c9316bf52abb868f1ff80e4b28';
 const contractABI = ArticleStorage.abi;
 
 Modal.setAppElement('#root'); // Set your root element for accessibility
@@ -79,13 +79,14 @@ export default function Profile({ account }) {
                 const generalOpt = await articleStorage.getGeneralOpt(account);
                 const generalNewsPromises = generalOpt.map(async (id) => {
                     const article = await articleStorage.getGeneralArticle(id.toNumber());
+                    const [titled, contentd] = article[4].split('%');
                     return {
-                        title: 'test title',
+                        title: titled || '',
                         contentId: article[0].toNumber(),
                         owner: article[1],
                         tags: article[2],
                         image: article[3],
-                        content: article[4],
+                        content: contentd,
                         visibleWords: article[5].toNumber(),
                         price: ethers.utils.formatUnits(article[6], 'wei'),
                         dateUploaded: new Date(article[7].toNumber() * 1000),
@@ -113,13 +114,14 @@ export default function Profile({ account }) {
                 const stockOpt = await articleStorage.getStockOpt(account);
                 const stockNewsPromises = stockOpt.map(async (id) => {
                     const article = await articleStorage.getStockArticle(id.toNumber());
+                    const [titled, contentd] = article[4].split('%');
                     return {
-                        title: 'test title',
+                        title: titled || '',
                         contentId: article[0].toNumber(),
                         owner: article[1],
                         tags: article[2],
                         image: article[3],
-                        content: article[4],
+                        content: contentd,
                         visibleWords: article[5].toNumber(),
                         price: ethers.utils.formatUnits(article[6], 'wei'),
                         dateUploaded: new Date(article[7].toNumber() * 1000),
@@ -287,7 +289,7 @@ export default function Profile({ account }) {
                         <h2 className="text-gray-700 dark:text-gray-300 text-xl font-bold mb-4">Bought News</h2>
                         {boughtNews.length > 0 ? (
                             boughtNews.map(news => (
-                                <Link to={`/newsFeed/${news.contentId}`} key={news.contentId} className="block mb-4 p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                                <Link to={`/newsFeed/${news.category}/${news.contentId}`} key={news.contentId} className="block mb-4 p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 rounded-lg">
                                     <h3 className="text-gray-700 dark:text-gray-300 text-lg font-bold">{news.title}</h3>
                                     <p className="text-gray-600 dark:text-gray-400 truncate">{news.content.split(' ').slice(0, news.visibleWords).join(' ')}...</p>
                                 </Link>
@@ -300,7 +302,7 @@ export default function Profile({ account }) {
                         <h2 className="text-gray-700 dark:text-gray-300 text-xl font-bold mb-4">Published News</h2>
                         {publishedNews.length > 0 ? (
                             publishedNews.map(news => (
-                                <Link to={`/newsFeed/${news.contentId}`} key={news.contentId} className="block mb-4 p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                                <Link to={`/newsFeed/${news.category}/${news.contentId}`} key={news.contentId} className="block mb-4 p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 rounded-lg">
                                     <h3 className="text-gray-700 dark:text-gray-300 text-lg font-bold">{news.title}</h3>
                                     <p className="text-gray-600 dark:text-gray-400 truncate">{news.content.split(' ').slice(0, news.visibleWords).join(' ')}...</p>
                                 </Link>

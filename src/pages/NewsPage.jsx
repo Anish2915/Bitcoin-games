@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import ArticleStorage from '../contracts/ArticleStorage.json'
 const { ethers } = require("ethers");
 
-const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
+const contractAddress = '0xc4ee449dc12ac2c9316bf52abb868f1ff80e4b28';
 const contractABI = ArticleStorage.abi;
 
 export default function NewsPage({ account, setAccount }) {
@@ -63,8 +63,9 @@ export default function NewsPage({ account, setAccount }) {
             } else {
                 result = await articleStorage.getStockOpt(account);
             }
-
-            const isPurchased = result.some(content => content.toNumber() === feedId);
+            //console.log(result);
+            
+            const isPurchased = result.some(content => content.toNumber() == feedId);
             if (!isPurchased) {
                 navigate(`/newsFeed`);
                 // const articleStorage2 = new ethers.Contract(contractAddress, contractABI, signer);
@@ -114,15 +115,16 @@ export default function NewsPage({ account, setAccount }) {
 
                     // Assuming the article data returned from the contract matches the state structure
                     if (category === 'general') {
+                        const [titled, contentd] = article[4].split('%');
                         const fetchedFeed = {
                             contentId: article[0].toNumber(),
-                            title: 'title', // Example title extraction
+                            title: titled, // Example title extraction
                             category: 'general',
                             tags: article[2],
                             visibleWords: article[5].toNumber(),
                             price: ethers.utils.formatUnits(article[6], 'wei'),
                             publishedDate: new Date(article[7].toNumber() * 1000),
-                            article: article[4],
+                            article: contentd,
                             // location: {
                             //     lat: article.latitude.div(1e6).toNumber(),
                             //     long: article.longitude.div(1e6).toNumber()
@@ -135,15 +137,16 @@ export default function NewsPage({ account, setAccount }) {
                         setFeed(fetchedFeed);
                     }
                     else {
+                        const [titled, contentd] = article[4].split('%');
                         const fetchedFeed = {
                             contentId: article[0].toNumber(), // Convert BigNumber to number
-                            title: 'title', // Replace with actual title extraction logic
+                            title: titled, // Replace with actual title extraction logic
                             category: 'stocks',
                             tags: article[2],
                             visibleWords: article[5].toNumber(), // Convert BigNumber to number
                             price: ethers.utils.formatUnits(article[6], 'wei'), // Convert BigNumber to string in ether
                             publishedDate: new Date(article[7].toNumber() * 1000), // Convert BigNumber to number and then to Date
-                            article: article[4],
+                            article: contentd,
                             startDate: new Date(article[10].toNumber() * 1000), // Convert BigNumber to number and then to Date
                             endDate: new Date(article[11].toNumber() * 1000), // Convert BigNumber to number and then to Date
                             userRating: article[9].toNumber(), // Convert BigNumber to number

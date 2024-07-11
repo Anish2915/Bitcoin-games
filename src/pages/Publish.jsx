@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 // Importing components
 import DatePickerComponent from '../components/DatePickerComponent';
 import LocationPicker from '../components/MapPicker';
@@ -14,7 +14,7 @@ const { ethers } = require("ethers");
 const contractABI = ArticleStorage.abi;
 
 
-const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
+const contractAddress = '0xc4ee449dc12ac2c9316bf52abb868f1ff80e4b28';
 const RSK_TESTNET_URL = 'https://public-node.testnet.rsk.co';
 
 async function getProvider() {
@@ -43,6 +43,7 @@ export default function Publish() {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [location, setLocation] = useState(null);
+    const navigate = useNavigate();
     const [articleDetails, setArticleDetails] = useState({
         'Title': '',
         'Tags': ['Article', 'Stock'],
@@ -130,19 +131,22 @@ export default function Publish() {
         if (contract) {
             try {
                 //const price = ethers.BigNumber.from(articleDetails.Price.toString());
+                const concatenatedArticle = `${articleDetails.Title}%${articleDetails.Article}`;
                 const tx = await contract.storeStockArticle(
                     articleDetails.Tags,
                     articleDetails.BgImg,
-                    articleDetails.Article,
+                    concatenatedArticle,
                     articleDetails.VisibleLimit,
                     articleDetails.Price,
-                    5, // Assuming aiRating
-                    3, // Assuming userRating
+                    0, // Assuming aiRating
+                    0, // Assuming userRating
                     Math.floor(startDate.getTime() / 1000),
                     Math.floor(endDate.getTime() / 1000)
                 );
                 await tx.wait();
                 console.log('Stock article stored successfully');
+                alert("Article Published Successful")
+                navigate(`/newsFeed`);
             } catch (error) {
                 console.error('Error storing stock article:', error);
             }
@@ -161,11 +165,11 @@ export default function Publish() {
                 
                 const latitude = location ? Math.round(location.lat * 1e6) : 0;
                 const longitude = location ? Math.round(location.lng * 1e6) : 0;
-                
+                const concatenatedArticle = `${articleDetails.Title}%${articleDetails.Article}`;
                 const tx = await contract.storeGeneralArticle(
                     articleDetails.Tags,
                     articleDetails.BgImg,
-                    articleDetails.Article,
+                    concatenatedArticle,
                     articleDetails.VisibleLimit,
                     articleDetails.Price,
                     0, // Assuming aiRating
@@ -175,6 +179,8 @@ export default function Publish() {
                 );
                 await tx.wait();
                 console.log('General article stored successfully');
+                alert("Article Published Successful")
+                navigate(`/newsFeed`);
             } catch (error) {
                 console.error('Error storing general article:', error);
             }

@@ -1,13 +1,18 @@
 import React, { useRef } from "react";
-//import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import ArticleStorage from '../../contracts/ArticleStorage.json'
 import {
   motion,
   useScroll,
   useTransform,
   useSpring,
 } from "framer-motion";
+const { ethers } = require("ethers");
+const contractAddress = '0xc4ee449dc12ac2c9316bf52abb868f1ff80e4b28';
+const contractABI = ArticleStorage.abi;
+//import { Link } from "react-router-dom";
 
-export const HeroParallax = ({ products, headingTitle1, headingTitle2, headingPara, headingHighlight, handleArticleClicked }) => {
+export const HeroParallax = ({ account, products, headingTitle1, headingTitle2, headingPara, headingHighlight }) => {
   const firstRow = products.slice(0, 5);
   const secondRow = products.slice(5, 10);
   const thirdRow = products.slice(10, 15);
@@ -70,7 +75,7 @@ export const HeroParallax = ({ products, headingTitle1, headingTitle2, headingPa
               product={product}
               translate={translateX}
               key={product.title}
-              handleArticleClicked={handleArticleClicked}
+              account={account}
             />
           ))}
         </motion.div>
@@ -80,7 +85,7 @@ export const HeroParallax = ({ products, headingTitle1, headingTitle2, headingPa
               product={product}
               translate={translateXReverse}
               key={product.title}
-              handleArticleClicked={handleArticleClicked}
+              account={account}
             />
           ))}
         </motion.div>
@@ -90,7 +95,7 @@ export const HeroParallax = ({ products, headingTitle1, headingTitle2, headingPa
               product={product}
               translate={translateX}
               key={product.title}
-              handleArticleClicked={handleArticleClicked}
+              account={account}
             />
           ))}
         </motion.div>
@@ -112,7 +117,57 @@ export const Header = ({ headingTitle1, headingTitle2, headingPara, headingHighl
   );
 };
 
-export const ProductCard = ({ product, translate , handleArticleClicked }) => {
+export const ProductCard = ({ product, translate, account }) => {
+  const navigate = useNavigate();
+
+  const handleArticleClicked = async (contentId, category) => {
+    console.log("clickededede");
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
+    let result;
+    if (category === "general") {
+        result = await articleStorage.getGeneralOpt(account);
+    } else {
+        result = await articleStorage.getStockOpt(account);
+    }
+
+    const isPurchased = result.some(content => content.toNumber() === contentId);
+
+    if (isPurchased) {
+        navigate(`/newsFeed/${category}/${contentId}`);
+        return;
+    } else {
+        // Retrieve the article details to get the price
+        const articleStorage2 = new ethers.Contract(contractAddress, contractABI, signer);
+        let article;
+        if (category === "general") {
+            article = await articleStorage.getGeneralArticle(contentId);
+        } else {
+            article = await articleStorage.getStockArticle(contentId);
+        }
+        const price = ethers.BigNumber.from(article[6]);
+
+        // Pay for the article
+        try {
+            let tx;
+            if (category === "general") {
+                tx = await articleStorage2.payForGeneralArticle(contentId, { value: price });
+            } else {
+                tx = await articleStorage2.payForStockArticle(contentId, { value: price });
+            }
+            console.log('Transaction sent:', tx);
+            const receipt = await tx.wait();
+            console.log('Transaction mined:', receipt);
+            navigate(`/newsFeed/${category}/${contentId}`);
+        }
+        catch (error) {
+            console.error("Payment failed:", error);
+            // Optionally, handle payment failure (e.g., show a notification)
+        }
+    }
+}
+
   return (
     <motion.div
       style={{

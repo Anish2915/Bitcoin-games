@@ -1,106 +1,198 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+//import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
+import ArticleStorage from '../contracts/ArticleStorage.json'
+const { ethers } = require("ethers");
+
+const contractAddress = '0xd28143c814b7a7ca990e18c07be5d5912b8f2aaf';
+const contractABI = ArticleStorage.abi;
 
 Modal.setAppElement('#root'); // Set your root element for accessibility
 
 export default function Profile({ account }) {
     const [user, setUser] = useState({
-        userAdd: '0X0868hf98gh57gyguki789',
-        backImg: '',
-        profileIcon: '',
-        aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
-        btcSpent: 0.02,
-        btcGained: 0.05,
-        totalTransaction: 36,
-        userTag: 'Web Developer'
+        // userAdd: account,
+        // backImg: '',
+        // profileIcon: '',
+        // aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
+        // btcSpent: 0.02,
+        // btcGained: 0.05,
+        // totalTransaction: 36,
+        // userTag: 'Web Developer'
     });
     const [boughtNews, setBoughtNews] = useState([]);
     const [publishedNews, setPublishedNews] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [formData, setFormData] = useState({ ...user });
-    const { userAdd } = useParams();
-    const navigate = useNavigate();
+    //const { userAdd } = useParams();
+    //const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchUser = async () => {
             // Fetch user data from an API
-            navigate(`/profile/${userAdd}`)
+
+            setUser({
+                userAdd: account,
+                backImg: '',
+                profileIcon: '',
+                aboutMe: 'An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.',
+                btcSpent: 0.02,
+                btcGained: 0.05,
+                totalTransaction: 36,
+                userTag: 'Web Developer'
+            })
+            //navigate(`/profile/${account}`)
         };
 
         const fetchNews = async () => {
-            // Fetch news data from an API
+            try {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const articleStorage = new ethers.Contract(contractAddress, contractABI, provider);
+
+                const generalOpt = await articleStorage.getGeneralOpt(account);
+                const generalNewsPromises = generalOpt.map(async (id) => {
+                    const article = await articleStorage.getGeneralArticle(id.toNumber());
+                    return {
+                        title: 'test title',
+                        contentId: article[0].toNumber(),
+                        owner: article[1],
+                        tags: article[2],
+                        image: article[3],
+                        content: article[4],
+                        visibleWords: article[5].toNumber(),
+                        price: ethers.utils.formatUnits(article[6], 'wei'),
+                        dateUploaded: new Date(article[7].toNumber() * 1000),
+                        aiRating: article[8].toNumber(),
+                        userRating: article[9].toNumber(),
+                        latitude: article[10].toNumber(),
+                        longitude: article[11].toNumber()
+                    };
+                });
+
+                const generalNews = await Promise.all(generalNewsPromises);
+
+                const newPublishedNews = [];
+                const newBoughtNews = [];
+
+                generalNews.forEach(article => {
+                    if (article.owner.toLowerCase() === account.toLowerCase()) {
+                        newPublishedNews.push(article);
+                    } else {
+                        newBoughtNews.push(article);
+                    }
+                });
+
+                // Fetch Stock Articles
+                const stockOpt = await articleStorage.getStockOpt(account);
+                const stockNewsPromises = stockOpt.map(async (id) => {
+                    const article = await articleStorage.getStockArticle(id.toNumber());
+                    return {
+                        title: 'test title',
+                        contentId: article[0].toNumber(),
+                        owner: article[1],
+                        tags: article[2],
+                        image: article[3],
+                        content: article[4],
+                        visibleWords: article[5].toNumber(),
+                        price: ethers.utils.formatUnits(article[6], 'wei'),
+                        dateUploaded: new Date(article[7].toNumber() * 1000),
+                        aiRating: article[8].toNumber(),
+                        userRating: article[9].toNumber(),
+                        startDate: new Date(article[10].toNumber() * 1000),
+                        endDate: new Date(article[11].toNumber() * 1000)
+                    };
+                });
+
+                const stockNews = await Promise.all(stockNewsPromises);
+
+                stockNews.forEach(article => {
+                    if (article.owner.toLowerCase() === account.toLowerCase()) {
+                        newPublishedNews.push(article);
+                    } else {
+                        newBoughtNews.push(article);
+                    }
+                });
+                setPublishedNews(newPublishedNews);
+                setBoughtNews(newBoughtNews);
+            }
+            catch (error) {
+                console.error("Failed to fetch news:", error);
+            }
             // Sample data for demonstration
-            setBoughtNews([
-                {
-                    contentId: 1,
-                    title: 'Ethereum Price',
-                    category: 'stocks',
-                    tags: ['stocks', 'price', 'ethereum'],
-                    visibleWords: 20,
-                    price: 1e18,
-                    publishedDate: new Date(),
-                    article: 'Ethereum price is currently at $2000. It is expected to rise to $2500 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-                    startDate: new Date(),
-                    endDate: new Date(),
-                    userRating: 8,
-                    aiRating: 6.2,
-                    bgImg: ''
-                }, {
-                    contentId: 2,
-                    title: 'Bitcoin Price',
-                    category: 'stocks',
-                    tags: ['stocks', 'price', 'bitcoin'],
-                    visibleWords: 16,
-                    price: 1e17,
-                    publishedDate: new Date(),
-                    article: 'Bitcoin price is currently at $50000. It is expected to rise to $60000 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-                    startDate: new Date(),
-                    endDate: new Date(),
-                    userRating: 5,
-                    aiRating: 6,
-                    bgImg: ''
-                }
-            ]);
-            setPublishedNews([
-                {
-                    contentId: 3,
-                    title: 'Clashes in Manipur',
-                    category: 'general',
-                    tags: ['general', 'politics', 'india', 'manipur', 'clashes', 'news'],
-                    visibleWords: 25,
-                    price: 1e16,
-                    publishedDate: new Date(),
-                    article: 'Clashes in Manipur are there from past three months. Up to now nearly 200+ people died. Till long time there was no action from the side of the central government. The whole Manipur is burning in fires. Some opposition leaders went but still now resolution can be seen. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-                    location: {
-                        lat: 24.817011,
-                        long: 93.936844
-                    },
-                    userRating: 3,
-                    aiRating: 9,
-                    bgImg: ''
-                }, {
-                    contentId: 4,
-                    title: 'Stock Market Crash',
-                    category: 'stocks',
-                    tags: ['stocks', 'price', 'stock market', 'crash', 'news'],
-                    visibleWords: 15,
-                    price: 1e17,
-                    publishedDate: new Date(),
-                    article: 'Stock market crashed today. The SENSEX fell by 1000 points. The NIFTY fell by 300 points. The stock market is expected to recover in the next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-                    startDate: new Date(),
-                    endDate: new Date(),
-                    userRating: 9.4,
-                    aiRating: 7.1,
-                    bgImg: ''
-                }
-            ]);
+
+            // setBoughtNews([
+            //     {
+            //         contentId: 1,
+            //         title: 'Ethereum Price',
+            //         category: 'stocks',
+            //         tags: ['stocks', 'price', 'ethereum'],
+            //         visibleWords: 20,
+            //         price: 1e18,
+            //         publishedDate: new Date(),
+            //         content: 'Ethereum price is currently at $2000. It is expected to rise to $2500 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            //         startDate: new Date(),
+            //         endDate: new Date(),
+            //         userRating: 8,
+            //         aiRating: 6.2,
+            //         bgImg: ''
+            //     }, {
+            //         contentId: 2,
+            //         title: 'Bitcoin Price',
+            //         category: 'stocks',
+            //         tags: ['stocks', 'price', 'bitcoin'],
+            //         visibleWords: 16,
+            //         price: 1e17,
+            //         publishedDate: new Date(),
+            //         content: 'Bitcoin price is currently at $50000. It is expected to rise to $60000 by the end of the month. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            //         startDate: new Date(),
+            //         endDate: new Date(),
+            //         userRating: 5,
+            //         aiRating: 6,
+            //         bgImg: ''
+            //     }
+            // ]);
+            // setPublishedNews([
+            //     {
+            //         contentId: 3,
+            //         title: 'Clashes in Manipur',
+            //         category: 'general',
+            //         tags: ['general', 'politics', 'india', 'manipur', 'clashes', 'news'],
+            //         visibleWords: 25,
+            //         price: 1e16,
+            //         publishedDate: new Date(),
+            //         content: 'Clashes in Manipur are there from past three months. Up to now nearly 200+ people died. Till long time there was no action from the side of the central government. The whole Manipur is burning in fires. Some opposition leaders went but still now resolution can be seen. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            //         location: {
+            //             lat: 24.817011,
+            //             long: 93.936844
+            //         },
+            //         userRating: 3,
+            //         aiRating: 9,
+            //         bgImg: ''
+            //     }, {
+            //         contentId: 4,
+            //         title: 'Stock Market Crash',
+            //         category: 'stocks',
+            //         tags: ['stocks', 'price', 'stock market', 'crash', 'news'],
+            //         visibleWords: 15,
+            //         price: 1e17,
+            //         publishedDate: new Date(),
+            //         content: 'Stock market crashed today. The SENSEX fell by 1000 points. The NIFTY fell by 300 points. The stock market is expected to recover in the next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+            //         startDate: new Date(),
+            //         endDate: new Date(),
+            //         userRating: 9.4,
+            //         aiRating: 7.1,
+            //         bgImg: ''
+            //     }
+            // ]);
         };
 
         fetchUser();
-        fetchNews();
-    }, [userAdd]);
+        if (account) {
+            fetchNews();
+        }
+    }, [account]);
 
     const handleEditClick = () => {
         setFormData({ ...user });
@@ -172,7 +264,7 @@ export default function Profile({ account }) {
                             boughtNews.map(news => (
                                 <Link to={`/newsFeed/${news.contentId}`} key={news.contentId} className="block mb-4 p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 rounded-lg">
                                     <h3 className="text-gray-700 dark:text-gray-300 text-lg font-bold">{news.title}</h3>
-                                    <p className="text-gray-600 dark:text-gray-400 truncate">{news.article.split(' ').slice(0, news.visibleWords).join(' ')}...</p>
+                                    <p className="text-gray-600 dark:text-gray-400 truncate">{news.content.split(' ').slice(0, news.visibleWords).join(' ')}...</p>
                                 </Link>
                             ))
                         ) : (
@@ -185,7 +277,7 @@ export default function Profile({ account }) {
                             publishedNews.map(news => (
                                 <Link to={`/newsFeed/${news.contentId}`} key={news.contentId} className="block mb-4 p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 rounded-lg">
                                     <h3 className="text-gray-700 dark:text-gray-300 text-lg font-bold">{news.title}</h3>
-                                    <p className="text-gray-600 dark:text-gray-400 truncate">{news.article.split(' ').slice(0, news.visibleWords).join(' ')}...</p>
+                                    <p className="text-gray-600 dark:text-gray-400 truncate">{news.content.split(' ').slice(0, news.visibleWords).join(' ')}...</p>
                                 </Link>
                             ))
                         ) : (

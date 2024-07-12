@@ -760,7 +760,7 @@ export default function Explore({ account, setAccount }) {
                                                 ) : (
                                                     <p>Location: {item.locName}</p>
                                                 )}
-                                                <p>Price: {`${item.price} Wei ( ${(57716.66/1e18)*item.price} USD)`}</p>
+                                                <p>Price: $ {(item.price / 1e18)*57716.66}</p>
                                             </div>
                                             <button
                                                 className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300 mt-auto self-end"

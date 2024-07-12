@@ -50,11 +50,12 @@ export default function Publish() {
         'BgImg': '',
         'Article': '',
         'VisibleLimit': 20,
-        'Price': 1e16,
+        'Price': 17326e9,
     });
     const [uploadedFile, setUploadedFile] = useState(null);
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [price, setPrice] = useState(1);
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -79,9 +80,19 @@ export default function Publish() {
     }
 
     const handlePriceChange = (e) => {
+        let price;
+        if (e.target.value <= 5) {
+            price = Math.round((e.target.value / 57716.66) * 1e18);
+            setPrice(e.target.value);
+        } else {
+            alert('Price must be less than $5');
+            setPrice(5);
+            price = Math.round((5 / 57716.66) * 1e18);
+        }
+        console.log(price)
         setArticleDetails(prevState => ({
             ...prevState,
-            Price: (e.target.value<=1e16 ? e.target.value : 1e16),
+            Price: price
         }))
     }
 
@@ -162,7 +173,7 @@ export default function Publish() {
         const contract = await getContract();
         if (contract) {
             try {
-                
+
                 const latitude = location ? Math.round(location.lat * 1e6) : 0;
                 const longitude = location ? Math.round(location.lng * 1e6) : 0;
                 const concatenatedArticle = `${articleDetails.Title}%${articleDetails.Article}`;
@@ -288,10 +299,10 @@ export default function Publish() {
                                         />
                                     </div>
                                     <div>
-                                        <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{`Price of the news (last 18 digits are after decimal) ${(57716.66/1e18)*articleDetails.price}`}</label>
+                                        <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter the price of the article in dollars ($)</label>
                                         <input
                                             type="number"
-                                            value={articleDetails.Price}
+                                            value={price}
                                             onChange={handlePriceChange}
                                             id="price"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -416,10 +427,10 @@ export default function Publish() {
                                         />
                                     </div>
                                     <div>
-                                        <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price of the news (last 18 digits are after decimal)</label>
+                                        <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter the price of the article in dollars ($)</label>
                                         <input
                                             type="number"
-                                            value={articleDetails.Price}
+                                            value={price}
                                             onChange={handlePriceChange}
                                             id="price"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

@@ -45,6 +45,7 @@ These instructions will get you a copy of the project up and running on your loc
 Make sure you have the following installed on your local machine:
 
 - 🟦 Node.js
+- 🟦 Python
 - 📦 npm
 - 🦊 MetaMask extension for your browser
 
@@ -62,12 +63,18 @@ Make sure you have the following installed on your local machine:
     ```bash
     npm install
     ```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ### Running the Application
 
 1. **▶️ Start the development server**:
     ```bash
     npm start
+    ```
+     ```bash
+    python app.py
     ```
 2. **🌐 Open your browser and navigate to** `http://localhost:3000`.
 

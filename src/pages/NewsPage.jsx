@@ -31,18 +31,21 @@ export default function NewsPage({ account, setAccount }) {
     const handleRatingSubmit = async (e) => {
         e.preventDefault();
         const indvar = feed.contentId;
-        const ratingVar = rating;
+        const ratingVar = Math.round(rating*100);
         const category = feed.category;
         try {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
             const articleStorage = new ethers.Contract(contractAddress, contractABI, signer);
+            let transaction;
             if (category === "general") {
-                await articleStorage.setGeneralUserRating(indvar, ratingVar);
+                transaction = await articleStorage.setGeneralUserRating(indvar, ratingVar);
             }
             else {
-                await articleStorage.setStockUserRating(indvar, ratingVar);
+                transaction = await articleStorage.setStockUserRating(indvar, ratingVar);
             }
+            await transaction.wait();
+            alert("Submit Successful");
         }
         catch (error) {
             console.error('Error setting user rating:', error);
@@ -105,11 +108,9 @@ export default function NewsPage({ account, setAccount }) {
 
                     let article;
                     if (category === 'general') {
-                        console.log(category, 'this general');
                         article = await articleStorage.getGeneralArticle(feedId);
                         console.log(article);
                     } else {
-                        console.log(category, 'this stock');
                         article = await articleStorage.getStockArticle(feedId);
                         console.log(article);
                     }
@@ -130,7 +131,7 @@ export default function NewsPage({ account, setAccount }) {
                             //     lat: article.latitude.div(1e6).toNumber(),
                             //     long: article.longitude.div(1e6).toNumber()
                             // },
-                            userRating: article[9].toNumber(),
+                            userRating: ((article[9].toNumber())/100).toFixed(1),
                             aiRating: article[8].toNumber(),
                             bgImg: article[3]
                         };

@@ -237,7 +237,7 @@ export default function Explore({ account, setAccount }) {
                     article: contentd,
                     startDate: new Date(article.startDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
                     endDate: new Date(article.endDate.toNumber() * 1000), // Convert BigNumber to number and then to Date
-                    userRating: article.userRating.toNumber(), // Convert BigNumber to number
+                    userRating: ((article.userRating.toNumber()) / 100).toFixed(2), // Convert BigNumber to number
                     aiRating: article.aiRating.toNumber(), // Convert BigNumber to number
                     bgImg: article.image
                 };
@@ -245,8 +245,19 @@ export default function Explore({ account, setAccount }) {
 
             // Fetch general articles
             const generalArticles = await articleStorage.getAllGeneralArticles();
-            const formattedGeneralArticles = generalArticles.map((article) => {
+            const formattedGeneralArticles = await Promise.all(generalArticles.map(async (article) => {
                 const [titled, contentd] = article.content.split('%');
+                const location = {
+                    lat: (article.latitude.toNumber() / 1e6).toFixed(6),
+                    long: (article.longitude.toNumber() / 1e6).toFixed(6)
+                };
+                const locName = await fetch(`https://geocode.maps.co/reverse?lat=${location.lat}&lon=${location.long}&api_key=669007e2ee322970406182mjg41bae8`)
+                    .then(response => response.json())
+                    .then(data => `${data.address.state_district} ${data.address.state} ${data.address.country}`)
+                    .catch(error => {
+                        console.error('Error fetching location name:', error);
+                        return 'Unknown location';
+                    });
                 return {
                     contentId: article.index.toNumber(),
                     title: titled, // Example title extraction
@@ -257,14 +268,15 @@ export default function Explore({ account, setAccount }) {
                     publishedDate: new Date(article.dateUploaded.toNumber() * 1000),
                     article: contentd,
                     location: {
-                        lat: (article.latitude.toNumber() / 1e6 ).toFixed(6),
-                        long: (article.longitude.toNumber() / 1e6 ).toFixed(6)
+                        lat: (article.latitude.toNumber() / 1e6).toFixed(6),
+                        long: (article.longitude.toNumber() / 1e6).toFixed(6)
                     },
-                    userRating: article.userRating.toNumber(),
+                    userRating: ((article.userRating.toNumber()) / 100).toFixed(2),
                     aiRating: article.aiRating.toNumber(),
-                    bgImg: article.image
+                    bgImg: article.image,
+                    locName: locName
                 };
-            });
+            }));
 
             // Combine both articles
             const fetchedNewsFeed = [...formattedStockArticles, ...formattedGeneralArticles];
@@ -746,9 +758,9 @@ export default function Explore({ account, setAccount }) {
                                                         <p>Prediction End: {item.endDate.toString().split(" ").slice(1, 4).join(" ")}</p>
                                                     </>
                                                 ) : (
-                                                    <p>Location: {item.location.lat}, {item.location.long}</p>
+                                                    <p>Location: {item.locName}</p>
                                                 )}
-                                                <p>Price: {item.price}</p>
+                                                <p>Price: {`${item.price} Wei ( ${(57716.66/1e18)*item.price} USD)`}</p>
                                             </div>
                                             <button
                                                 className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300 mt-auto self-end"

@@ -7,7 +7,8 @@ Chain Sphere is an innovative e-commerce/e-marketplace leveraging Web 3 technolo
 ### The Problem
 
 In today's fast-paced world, access to timely and accurate information is crucial. However, the market for news and inside information is often plagued by issues such as misinformation, lack of transparency, and difficulties in verifying the credibility of sources. Traditional platforms do not offer a reliable mechanism for ensuring the accuracy and authenticity of the information being traded.
-
+<br>
+Moreover, the user who has some important and useful information has no means to earn money from it. Why to share information or news that is so important with someone for free.?
 ### The Solution
 
 Chain Sphere addresses these challenges by creating a decentralized marketplace where users can trade news and inside information securely. By leveraging Web 3 technologies, we ensure that transactions are transparent, secure, and immutable. Our platform incorporates user ratings and AI verification to maintain a high standard of information accuracy and credibility.

@@ -748,6 +748,7 @@ export default function Explore({ account, setAccount }) {
                                                 ) : (
                                                     <p>Location: {item.location.lat}, {item.location.long}</p>
                                                 )}
+                                                <p>Price: {item.price}</p>
                                             </div>
                                             <button
                                                 className="border px-4 py-1 rounded-lg border-gray-500 text-gray-300 mt-auto self-end"

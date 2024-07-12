@@ -26,11 +26,13 @@ export default function NewsPage({ account, setAccount }) {
         aiRating: 0,
         bgImg: ''
     });
+    const [rating, setRating] = useState(null);
 
-    const handleRatingSubmit = async () => {
-        const indvar = 1;
-        const ratingVar = 5;
-        const category = "general";
+    const handleRatingSubmit = async (e) => {
+        e.preventDefault();
+        const indvar = feed.contentId;
+        const ratingVar = rating;
+        const category = feed.category;
         try {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
@@ -48,8 +50,7 @@ export default function NewsPage({ account, setAccount }) {
     }
 
     const handleRatingChange = (e) => {
-        setFeed({ ...feed, userRating: parseFloat(e.target.value) })
-        // Set the rating here in the backend
+        setRating(parseFloat(e.target.value));
     }
 
     useEffect(() => {
@@ -155,6 +156,7 @@ export default function NewsPage({ account, setAccount }) {
                         };
                         console.log(fetchedFeed);
                         setFeed(fetchedFeed);
+                        setRating(fetchedFeed.userRating);
                     }
                 } catch (error) {
                     console.error("Failed to fetch article:", error);
@@ -178,7 +180,7 @@ export default function NewsPage({ account, setAccount }) {
                 <div className="w-full text-center">
                     <h1 className="text-3xl font-bold mb-4">{feed.title}</h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{feed.publishedDate.toString()}</p>
-                    <div className="flex flex-col flex-wrap justify-center items-center gap-2 mb-6">
+                    <form className="flex flex-col flex-wrap justify-center items-center gap-2 mb-6">
                         <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Rate this Article:</h2>
                         <div className="flex items-center w-[20em]">
                             <input
@@ -186,13 +188,17 @@ export default function NewsPage({ account, setAccount }) {
                                 min="0"
                                 max="10"
                                 step="0.1"
-                                value={feed.userRating}
+                                value={rating}
                                 onChange={handleRatingChange}
                                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            <span className="ml-2 text-gray-900 dark:text-gray-100">{feed.userRating}</span>
+                            <span className="ml-2 text-gray-900 dark:text-gray-100">{rating}</span>
                         </div>
-                    </div>
+                        <button
+                            className='bg-blue-600 hover:shadow-md shadow-gray-900 text-white p-2 rounded-lg dark:bg-blue-600 dark:hover:shadow-gray-200'
+                            onClick={handleRatingSubmit}
+                        >Submit Rating</button>
+                    </form>
 
                     {feed.category === 'stocks' ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

@@ -50,7 +50,7 @@ export default function Publish() {
         'BgImg': '',
         'Article': '',
         'VisibleLimit': 20,
-        'Price': 10000000000000000,
+        'Price': 1e16,
     });
     const [uploadedFile, setUploadedFile] = useState(null);
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -288,7 +288,7 @@ export default function Publish() {
                                         />
                                     </div>
                                     <div>
-                                        <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price of the news (last 18 digits are after decimal)</label>
+                                        <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{`Price of the news (last 18 digits are after decimal) ${(57716.66/1e18)*articleDetails.price}`}</label>
                                         <input
                                             type="number"
                                             value={articleDetails.Price}

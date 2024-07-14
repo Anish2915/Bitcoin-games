@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Bitcoin-games/static/css/main.e269004d.css",
+    "main.js": "/Bitcoin-games/static/js/main.278c1a93.js",
+    "index.html": "/Bitcoin-games/index.html",
+    "main.e269004d.css.map": "/Bitcoin-games/static/css/main.e269004d.css.map",
+    "main.278c1a93.js.map": "/Bitcoin-games/static/js/main.278c1a93.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e269004d.css",
+    "static/js/main.278c1a93.js"
+  ]
+}

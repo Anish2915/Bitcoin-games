@@ -2,6 +2,9 @@
 
 Chain Sphere is an innovative e-commerce/e-marketplace leveraging Web 3 technology, MetaMask, Rootstock, and the Gemini API. This platform allows users to buy and sell news or inside information. It aims to provide a secure, transparent, and reliable marketplace where information is not only traded but also verified and rated by both users and AI.
 
+## Demo
+https://prakharmosesok.github.io/ChainSphere/
+
 ## Introduction
 
 ### The Problem
